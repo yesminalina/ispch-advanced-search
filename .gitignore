@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+venv/
+.venv/
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+
+# Secrets / environment
+.env
+
+# Local Claude instructions (not versioned for now)
+CLAUDE.md
+
+# Temporary scraping output
+ficha_prueba.html
+
+# macOS
+.DS_Store
+
+# Editor: only version shared settings
+.vscode/*
+!.vscode/settings.json
