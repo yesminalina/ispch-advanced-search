@@ -1,0 +1,22 @@
+<table>
+    <thead>
+        <th>Registro</th>
+        <th>Nombre</th>
+        <th>Titular</th>
+        <th>Estado</th>
+    </thead>
+    <tbody>
+        {% for product in products %}
+        <tr>
+            <td>{{ product.registro }}</td>
+            <td>{{ product.nombre }}</td>
+            <td>{{ product.titular }}</td>
+            <td>{{ product.estado }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No se encontraron productos</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

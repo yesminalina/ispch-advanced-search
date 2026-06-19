@@ -4,12 +4,17 @@
 
 {% block content %}
 <h1>Buscador avanzado de registros sanitarios ISP</h1>
-<form>
-    {# pendiente #}
-</form>
+<input
+    type="text"
+    name="name"
+    placeholder="Nombre del producto"
+    hx-get="{% url 'registros:search' %}"
+    hx-trigger="keyup changed delay:300ms"
+    hx-target="#results"
+>
 
-<div id="resultados">
-    {# Aquí aparecerán los resultados #}
+<div id="results">
+    {% include "registros/partials/results.html" %}
 </div>
 
 {% endblock %}
