@@ -1,15 +1,34 @@
 from django.db import models
 
 class Product(models.Model):
+
+    class Equivalencia(models.TextChoices):
+        REFERENTE = "Referente", "Referente"
+        EQUIVALENTE_TERAPEUTICO = "Equivalente Terapéutico", "Equivalente Terapéutico"
+        EQUIVALENTE_TERAPEUTICO_REFERENTE = "Equivalente Terapéutico - Referente", "Equivalente Terapéutico - Referente"
+        BIOSIMILAR = "Biosimilar", "Biosimilar"
+        REFERENTE_BIOTECNOLOGICO = "Referente Biotecnológico", "Referente Biotecnológico"
+
+    class CondicionVenta(models.TextChoices):
+        DIRECTA = "Directa", "Directa"
+        RECETA_CHEQUE = "Receta Cheque", "Receta Cheque"
+        RECETA_RETENIDA = "Receta Retenida", "Receta Retenida"
+        RECETA_SIMPLE = "Receta Simple", "Receta Simple"
+        RECETA_RETENIDA_CONTROL = "Receta Retenida con Control de Existencia", "Receta Retenida con Control de Existencia"
+
+    class Estado(models.TextChoices):
+        VIGENTE = "Vigente", "Vigente"
+        NO_VIGENTE = "No Vigente", "No Vigente"
+        SUSPENSION_VOLUNTARIA = "Vigente con suspensión voluntaria de distribución", "Vigente con suspensión voluntaria de distribución"
+
     # ---Identificación---
     registro = models.CharField(max_length=30, unique=True)
     nombre = models.CharField(max_length=255)
     ref_tramite = models.CharField(max_length=50, blank=True)
-    equivalencia = models.CharField(max_length=100, blank=True)
 
     # ---Titular y estado---
     titular = models.CharField(max_length=255, blank=True)
-    estado = models.CharField(max_length=30, blank=True)
+    estado = models.CharField(max_length=100, blank=True, choices=Estado.choices)
 
     # ---Resolución y fechas---
     resolucion = models.CharField(max_length=20, blank=True)
@@ -20,7 +39,8 @@ class Product(models.Model):
     # ---Características---
     regimen = models.CharField(max_length=100, blank=True)
     via_administracion = models.CharField(max_length=100, blank=True)
-    condicion_venta = models.CharField(max_length=100, blank=True)
+    equivalencia = models.CharField(max_length=100, blank=True, choices=Equivalencia.choices)
+    condicion_venta = models.CharField(max_length=100, blank=True, choices=CondicionVenta.choices)
     farmacovigilancia = models.CharField(max_length=255, blank=True)
     indicacion = models.TextField(blank=True)
 

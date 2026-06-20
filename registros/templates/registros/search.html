@@ -31,12 +31,55 @@
         placeholder="Resolución"
     >
     <br>
-        <input
+    <input
         type="text"
         name="descripcion"
         placeholder="Descripción del envase"
     >
-
+    <br>
+    <select name="estado">
+        <option value="">Estado</option>
+        {% for value, key in estado_choices %}
+            <option value="{{value}}">{{key}}</option>
+        {% endfor %}
+    </select>
+    <select name="equivalencia">
+        <option value="">Equivalencia Terapéutica o Biosimilar</option>
+        {% for value, key in equivalencia_choices %}
+            <option value="{{value}}">{{key}}</option>
+        {% endfor %}
+    </select>
+    <select name="condicion_venta">
+        <option value="">Condición de Venta</option>
+        {% for value, key in condicion_venta_choices %}
+            <option value="{{value}}">{{key}}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <select name="regimen">
+        <option value="">Regimen</option>
+        {% for regimen in regimen_choices %}
+            <option value="{{regimen}}">{{regimen}}</option>
+        {% endfor %}
+    </select>
+    <select name="via_administracion">
+        <option value="">Vía de Administración</option>
+        {% for via in via_administracion_choices %}
+            <option value="{{via}}">{{via}}</option>
+        {% endfor %}
+    </select>
+    <select name="condicion_almacenamiento">
+        <option value="">Condición de Almacenamiento</option>
+        {% for condicion in condicion_almacenamiento_choices %}
+            <option value="{{condicion}}">{{condicion}}</option>
+        {% endfor %}
+    </select>
+    <select name="periodo_eficacia">
+        <option value="">Periodo de Eficacia</option>
+        {% for periodo in periodo_eficacia_choices %}
+            <option value="{{periodo}}">{{periodo}}</option>
+        {% endfor %}
+    </select>
     <button type="submit">Buscar</button>
 </form>
 
