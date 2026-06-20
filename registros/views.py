@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Product
+from .models import Product, Package, CompanyRole
 
 def search(request):
     nombre = request.GET.get("nombre", "")
@@ -15,8 +15,13 @@ def search(request):
     condicion_almacenamiento = request.GET.get("condicion_almacenamiento", "")
     periodo_eficacia = request.GET.get("periodo_eficacia", "")
 
-    # Envase
+    # Relacionadas con el Envase
     descripcion = request.GET.get("descripcion", "")
+
+    # Relacionadas con empresas asociadas
+    funcion = request.GET.get("funcion", "")
+    razon_social = request.GET.get("razon_social", "")
+    pais = request.GET.get("pais", "")
 
     products = Product.objects.all()
     has_filters = False
@@ -64,6 +69,8 @@ def search(request):
     if via_administracion:
         has_filters = True
         products = products.filter(via_administracion=via_administracion)
+    
+    # ---- Relacionados con el envase ----
 
     if condicion_almacenamiento:
         has_filters = True
@@ -73,25 +80,47 @@ def search(request):
         has_filters = True
         products = products.filter(packagings__periodo_eficacia_norm=periodo_eficacia)
     
+    # ---- Relacionados con empresas asociadas -----
+    if funcion:
+        has_filters = True
+        company_filters = {}
+        company_filters["company_roles__funcion_norm"] = funcion
+
+        if razon_social:
+            company_filters["company_roles__razon_social__icontains"] = razon_social
+        
+        if pais:
+            company_filters["company_roles__pais_norm"] = pais
+        
+        products = products.filter(**company_filters)
+    # ----------------------------------------------
+
     if not has_filters:
         products = Product.objects.none()
     
     products = products.distinct()
-    
+
+    # Opciones que se obtienen de manera dinámica, a diferencia de estado, equivalencia y condicion_venta, que se espera que no cambien ya que vienen de los selectores del buscador oficial de registros del ISPCH
     regimen_choices = Product.objects.values_list("regimen", flat=True).distinct().exclude(regimen="")
     via_administracion_choices = Product.objects.values_list("via_administracion", flat=True).distinct().exclude(via_administracion="")
-    condicion_almacenamiento_choices = Product.objects.values_list("packagings__condicion_almacenamiento_norm", flat=True).distinct().exclude(packagings__condicion_almacenamiento_norm="")
-    periodo_eficacia_choices = Product.objects.values_list("packagings__periodo_eficacia_norm", flat=True).distinct().exclude(packagings__periodo_eficacia_norm="")
+    condicion_almacenamiento_choices = Package.objects.values_list("condicion_almacenamiento_norm", flat=True).distinct().exclude(condicion_almacenamiento_norm="")
+    periodo_eficacia_choices = Package.objects.values_list("periodo_eficacia_norm", flat=True).distinct().exclude(periodo_eficacia_norm="")
+    funcion_choices = CompanyRole.objects.values_list("funcion_norm", flat=True).distinct().exclude(funcion_norm="")
+    pais_choices = CompanyRole.objects.values_list("pais_norm", flat=True).distinct().exclude(pais_norm="")
 
     context = {
         "products": products,
+        # ----- choices definidas como clases en el modelo ------
         "estado_choices": Product.Estado.choices,
         "equivalencia_choices": Product.Equivalencia.choices,
         "condicion_venta_choices": Product.CondicionVenta.choices,
+        # -------------------------------------------------------
         "regimen_choices": regimen_choices,
         "via_administracion_choices": via_administracion_choices,
         "condicion_almacenamiento_choices": condicion_almacenamiento_choices,
-        "periodo_eficacia_choices": periodo_eficacia_choices
+        "periodo_eficacia_choices": periodo_eficacia_choices,
+        "funcion_choices": funcion_choices,
+        "pais_choices": pais_choices
     }
     
     if request.headers.get("HX-Request") == "true":

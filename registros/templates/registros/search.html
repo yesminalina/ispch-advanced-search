@@ -1,4 +1,5 @@
 {% extends "registros/base.html" %}
+{% load static %}
 
 {% block title %}Buscador avanzado de registros sanitarios ISP{% endblock %}
 
@@ -80,11 +81,34 @@
             <option value="{{periodo}}">{{periodo}}</option>
         {% endfor %}
     </select>
+    <br>
+    <select name="funcion" id="funcion-empresa">
+        <option value="">Función de empresa</option>
+        {% for funcion in funcion_choices %}
+            <option value="{{funcion}}">{{funcion}}</option>
+        {% endfor%}
+    </select>
+    <input
+        type="text"
+        name="razon_social"
+        placeholder="razón social de la empresa"
+        id="razon-social-input"
+        disabled
+    >
+    <select name="pais" id="pais-select" disabled>
+        <option value="">País</option>
+        {% for pais in pais_choices %}
+            <option value="{{pais}}">{{pais}}</option>
+        {% endfor%}
+    </select>
+    <br>
     <button type="submit">Buscar</button>
 </form>
 
 <div id="results">
     {% include "registros/partials/results.html" %}
 </div>
+
+<script src="{% static 'registros/js/search-form.js' %}" defer></script>
 
 {% endblock %}
