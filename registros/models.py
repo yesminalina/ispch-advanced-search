@@ -76,7 +76,7 @@ class CompanyRole(models.Model):
 
 class ActiveIngredient(models.Model):
     producto = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name="formulas"
+        Product, on_delete=models.CASCADE, related_name="active_ingredients"
     )
     nombre_pa = models.CharField(max_length=255, blank=True)
     concentracion = models.CharField(max_length=50, blank=True)

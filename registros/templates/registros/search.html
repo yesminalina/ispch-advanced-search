@@ -4,14 +4,41 @@
 
 {% block content %}
 <h1>Buscador avanzado de registros sanitarios ISP</h1>
-<input
-    type="text"
-    name="name"
-    placeholder="Nombre del producto"
-    hx-get="{% url 'registros:search' %}"
-    hx-trigger="keyup changed delay:300ms"
-    hx-target="#results"
->
+<form hx-get="{% url 'registros:search' %}" hx-target="#results">
+    <input
+        type="text"
+        name="nombre"
+        placeholder="Nombre del producto"
+    >
+    <input
+        type="text"
+        name="nombre_pa"
+        placeholder="Principio activo"
+    >
+    <input
+        type="text"
+        name="titular"
+        placeholder="Titular"
+    >
+    <input
+        type="text"
+        name="registro"
+        placeholder="Número de registro"
+    >
+    <input
+        type="text"
+        name="resolucion"
+        placeholder="Resolución"
+    >
+    <br>
+        <input
+        type="text"
+        name="descripcion"
+        placeholder="Descripción del envase"
+    >
+
+    <button type="submit">Buscar</button>
+</form>
 
 <div id="results">
     {% include "registros/partials/results.html" %}
