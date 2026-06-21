@@ -21,7 +21,7 @@ def parse_date(date_str: str | None):
         return None
 
 
-def load_product(data: dict) -> tuple[Product, bool]:
+def load_product(data: dict, control_legal: str = "") -> tuple[Product, bool]:
     """
     Recibe el diccionario que devuelve parse_file() y guarda
     el producto con todos sus relacionados en la base de datos.
@@ -29,6 +29,11 @@ def load_product(data: dict) -> tuple[Product, bool]:
     Usa get_or_create para no duplicar si el registro ya existe.
     Si el producto ya existía, actualiza sus campos y reemplaza
     los relacionados.
+
+    control_legal viene del Excel del ISP (columna lblLegal), NO de la
+    ficha HTML — por eso es un parámetro separado y no parte del dict.
+    Se escribe solo cuando tiene valor, para evitar que un re-scrapeo
+    de la ficha (sin Excel) lo borre con vacío.
 
     Devuelve (producto, created) donde created es True si era nuevo.
     """
@@ -49,6 +54,7 @@ def load_product(data: dict) -> tuple[Product, bool]:
             "condicion_venta":    data.get("condicion_venta", ""),
             "farmacovigilancia":  data.get("farmacovigilancia", ""),
             "indicacion":         data.get("indicacion", ""),
+            "control_legal":      control_legal,
             "scraped_at":         timezone.now(),
         }
     )
@@ -70,6 +76,10 @@ def load_product(data: dict) -> tuple[Product, bool]:
         product.farmacovigilancia = data.get("farmacovigilancia", "")
         product.indicacion        = data.get("indicacion", "")
         product.scraped_at        = timezone.now()
+        # control_legal viene del Excel, no de la ficha: solo se escribe
+        # cuando tiene valor para no borrar lo que ya estaba.
+        if control_legal:
+            product.control_legal = control_legal
         product.save()
 
         # Borramos los relacionados viejos para reemplazarlos

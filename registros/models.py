@@ -16,6 +16,10 @@ class Product(models.Model):
         RECETA_SIMPLE = "Receta Simple", "Receta Simple"
         RECETA_RETENIDA_CONTROL = "Receta Retenida con Control de Existencia", "Receta Retenida con Control de Existencia"
 
+    class ControlLegal(models.TextChoices):
+        PSICOTROPICO  = "Psicotrópico",  "Psicotrópico"
+        ESTUPEFACIENTE = "Estupefaciente", "Estupefaciente"
+
     class Estado(models.TextChoices):
         VIGENTE = "Vigente", "Vigente"
         NO_VIGENTE = "No Vigente", "No Vigente"
@@ -41,6 +45,7 @@ class Product(models.Model):
     via_administracion = models.CharField(max_length=100, blank=True)
     equivalencia = models.CharField(max_length=100, blank=True, choices=Equivalencia.choices)
     condicion_venta = models.CharField(max_length=100, blank=True, choices=CondicionVenta.choices)
+    control_legal   = models.CharField(max_length=100, blank=True, choices=ControlLegal.choices)
     farmacovigilancia = models.CharField(max_length=255, blank=True)
     indicacion = models.TextField(blank=True)
 

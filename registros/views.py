@@ -11,6 +11,7 @@ def search(request):
     estado = request.GET.get("estado", "")
     equivalencia = request.GET.get("equivalencia", "")
     condicion_venta = request.GET.get("condicion_venta", "")
+    control_legal = request.GET.get("control_legal", "")
     regimen = request.GET.get("regimen", "")
     via_administracion = request.GET.get("via_administracion", "")
     condicion_almacenamiento = request.GET.get("condicion_almacenamiento", "")
@@ -70,6 +71,10 @@ def search(request):
     if condicion_venta:
         has_filters = True
         products = products.filter(condicion_venta=condicion_venta)
+
+    if control_legal:
+        has_filters = True
+        products = products.filter(control_legal=control_legal)
 
     if regimen:
         has_filters = True
@@ -155,6 +160,7 @@ def search(request):
         "estado_choices": Product.Estado.choices,
         "equivalencia_choices": Product.Equivalencia.choices,
         "condicion_venta_choices": Product.CondicionVenta.choices,
+        "control_legal_choices": Product.ControlLegal.choices,
         # -------------------------------------------------------
         "regimen_choices": regimen_choices,
         "via_administracion_choices": via_administracion_choices,

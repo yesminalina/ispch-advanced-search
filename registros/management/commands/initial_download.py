@@ -71,7 +71,7 @@ class Command(BaseCommand):
                 response.raise_for_status()
 
                 data = parse_file(response.text)
-                product, created = load_product(data)
+                product, created = load_product(data, control_legal=record["control_legal"])
 
                 if created:
                     created_count += 1

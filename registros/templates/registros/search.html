@@ -56,6 +56,12 @@
             <option value="{{value}}">{{key}}</option>
         {% endfor %}
     </select>
+    <select name="control_legal">
+        <option value="">Control Legal</option>
+        {% for value, key in control_legal_choices %}
+            <option value="{{value}}">{{key}}</option>
+        {% endfor %}
+    </select>
     <br>
     <select name="regimen">
         <option value="">Regimen</option>
