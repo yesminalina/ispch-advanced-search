@@ -20,6 +20,9 @@ CLAUDE.md
 # Temporary scraping output
 ficha_prueba.html
 
+# ISP Excel source files (not versioned; path passed via CLI argument)
+files/
+
 # macOS
 .DS_Store
 

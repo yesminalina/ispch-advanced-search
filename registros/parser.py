@@ -4,12 +4,12 @@ Parsea el HTML de una ficha del Registro Sanitario ISP y devuelve
 un diccionario listo para guardar en Django.
 
 Uso:
-    from parser import parsear_ficha
+    from parser import parse_file
 
     with open("ficha_prueba.html", encoding="utf-8") as f:
         html = f.read()
 
-    datos = parsear_ficha(html)
+    datos = parse_file(html)
 """
 
 from bs4 import BeautifulSoup
@@ -93,7 +93,7 @@ def _parse_company_function(soup: BeautifulSoup) -> list[dict]:
     return empresas
 
 
-def _parse_formula(soup: BeautifulSoup) -> list[dict]:
+def _parse_active_ingredients(soup: BeautifulSoup) -> list[dict]:
     """
     Tabla gvFormulas — principios activos.
     Puede tener 1 o N filas (combinaciones de PA).
@@ -103,25 +103,25 @@ def _parse_formula(soup: BeautifulSoup) -> list[dict]:
     if not tabla:
         return []
 
-    formulas = []
+    active_ingredients = []
     for fila in tabla.find_all("tr")[1:]:
         celdas = fila.find_all("td")
         if len(celdas) < 3:
             continue
-        formulas.append({
+        active_ingredients.append({
             "nombre_pa":     celdas[0].get_text(strip=True),
             "concentracion": celdas[1].get_text(strip=True),
             "unidad_medida": celdas[2].get_text(strip=True),
             "parte":         celdas[3].get_text(strip=True) if len(celdas) > 3 else "",
         })
-    return formulas
+    return active_ingredients
 
 
 # ─────────────────────────────────────────────
 # Función principal
 # ─────────────────────────────────────────────
 
-def parsear_ficha(html: str) -> dict:
+def parse_file(html: str) -> dict:
     """
     Recibe el HTML completo de una ficha ISP como string
     y devuelve un diccionario con todos los campos.
@@ -161,7 +161,7 @@ def parsear_ficha(html: str) -> dict:
         # ── Secciones repetibles ────────────────────────────────
         "envases":            _parse_packaging(soup),
         "funcion_empresas":   _parse_company_function(soup),
-        "formulas":           _parse_formula(soup),
+        "active_ingredients": _parse_active_ingredients(soup),
     }
 
 
@@ -177,5 +177,5 @@ if __name__ == "__main__":
     with open(archivo, encoding="utf-8") as f:
         html = f.read()
 
-    datos = parsear_ficha(html)
+    datos = parse_file(html)
     print(json.dumps(datos, ensure_ascii=False, indent=2))

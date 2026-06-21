@@ -23,7 +23,7 @@ def parse_date(date_str: str | None):
 
 def load_product(data: dict) -> tuple[Product, bool]:
     """
-    Recibe el diccionario que devuelve parsear_ficha() y guarda
+    Recibe el diccionario que devuelve parse_file() y guarda
     el producto con todos sus relacionados en la base de datos.
 
     Usa get_or_create para no duplicar si el registro ya existe.
@@ -75,7 +75,7 @@ def load_product(data: dict) -> tuple[Product, bool]:
         # Borramos los relacionados viejos para reemplazarlos
         product.packagings.all().delete()
         product.company_roles.all().delete()
-        product.formulas.all().delete()
+        product.active_ingredients.all().delete()
 
     # Crear envases con campos normalizados
     for envase in data.get("envases", []):
@@ -107,13 +107,13 @@ def load_product(data: dict) -> tuple[Product, bool]:
         )
 
     # Crear principios activos (sin normalización, datos más limpios)
-    for formula in data.get("formulas", []):
+    for ingredient in data.get("active_ingredients", []):
         ActiveIngredient.objects.create(
             producto=product,
-            nombre_pa=formula.get("nombre_pa", ""),
-            concentracion=formula.get("concentracion", ""),
-            unidad_medida=formula.get("unidad_medida", ""),
-            parte=formula.get("parte", ""),
+            nombre_pa=ingredient.get("nombre_pa", ""),
+            concentracion=ingredient.get("concentracion", ""),
+            unidad_medida=ingredient.get("unidad_medida", ""),
+            parte=ingredient.get("parte", ""),
         )
 
     return product, created
