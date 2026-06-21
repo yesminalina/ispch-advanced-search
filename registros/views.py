@@ -15,13 +15,21 @@ def search(request):
     condicion_almacenamiento = request.GET.get("condicion_almacenamiento", "")
     periodo_eficacia = request.GET.get("periodo_eficacia", "")
 
-    # Relacionadas con el Envase
+    #  Variables relacionadas con el Envase
     descripcion = request.GET.get("descripcion", "")
 
-    # Relacionadas con empresas asociadas
+    #  Variables relacionadas con empresas asociadas
     funcion = request.GET.get("funcion", "")
     razon_social = request.GET.get("razon_social", "")
     pais = request.GET.get("pais", "")
+
+    # Variables relacionadas con fechas
+    inscripcion_from = request.GET.get("inscripcion_from","")
+    inscripcion_to = request.GET.get("inscripcion_to","")
+    ultima_renovacion_from = request.GET.get("ultima_renovacion_from","")
+    ultima_renovacion_to = request.GET.get("ultima_renovacion_to","")
+    prox_renovacion_from = request.GET.get("prox_renovacion_from","")
+    prox_renovacion_to = request.GET.get("prox_renovacion_to","")
 
     products = Product.objects.all()
     has_filters = False
@@ -70,7 +78,7 @@ def search(request):
         has_filters = True
         products = products.filter(via_administracion=via_administracion)
     
-    # ---- Relacionados con el envase ----
+    # ---- Filtros relacionados con el envase ----
 
     if condicion_almacenamiento:
         has_filters = True
@@ -80,7 +88,7 @@ def search(request):
         has_filters = True
         products = products.filter(packagings__periodo_eficacia_norm=periodo_eficacia)
     
-    # ---- Relacionados con empresas asociadas -----
+    # ---- Filtros relacionados con empresas asociadas -----
     if funcion:
         has_filters = True
         company_filters = {}
@@ -94,6 +102,31 @@ def search(request):
         
         products = products.filter(**company_filters)
     # ----------------------------------------------
+
+    #---- Filtro relacionados con fechas
+    if inscripcion_from:
+        has_filters = True
+        products = products.filter(fecha_inscripcion__gte = inscripcion_from)
+
+    if inscripcion_to:
+        has_filters = True
+        products = products.filter(fecha_inscripcion__lte = inscripcion_to)
+
+    if ultima_renovacion_from:
+        has_filters = True
+        products = products.filter(ultima_renovacion__gte = ultima_renovacion_from)
+
+    if ultima_renovacion_to:
+        has_filters = True
+        products = products.filter(ultima_renovacion__lte = ultima_renovacion_to)
+
+    if prox_renovacion_from:
+        has_filters = True
+        products = products.filter(prox_renovacion__gte = prox_renovacion_from)
+
+    if prox_renovacion_to:
+        has_filters = True
+        products = products.filter(prox_renovacion__lte = prox_renovacion_to)
 
     if not has_filters:
         products = Product.objects.none()
