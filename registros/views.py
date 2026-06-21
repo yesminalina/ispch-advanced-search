@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.core.paginator import Paginator
 from .models import Product, Package, CompanyRole
 
 def search(request):
@@ -133,6 +134,12 @@ def search(request):
     
     products = products.distinct()
 
+    # ---- Paginación ----
+    paginator = Paginator(products, 25)
+    page_number = request.GET.get("page", 1)
+    page_obj = paginator.get_page(page_number)
+    # ---------------------
+
     # Opciones que se obtienen de manera dinámica, a diferencia de estado, equivalencia y condicion_venta, que se espera que no cambien ya que vienen de los selectores del buscador oficial de registros del ISPCH
     regimen_choices = Product.objects.values_list("regimen", flat=True).distinct().exclude(regimen="")
     via_administracion_choices = Product.objects.values_list("via_administracion", flat=True).distinct().exclude(via_administracion="")
@@ -143,6 +150,7 @@ def search(request):
 
     context = {
         "products": products,
+        "page_obj": page_obj,
         # ----- choices definidas como clases en el modelo ------
         "estado_choices": Product.Estado.choices,
         "equivalencia_choices": Product.Equivalencia.choices,

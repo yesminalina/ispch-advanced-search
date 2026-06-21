@@ -6,7 +6,7 @@
         <th>Estado</th>
     </thead>
     <tbody>
-        {% for product in products %}
+        {% for product in page_obj %}
         <tr>
             <td>{{ product.registro }}</td>
             <td>{{ product.nombre }}</td>
@@ -20,3 +20,26 @@
         {% endfor %}
     </tbody>
 </table>
+{% if page_obj.paginator.num_pages > 1 %}
+<div id="paginacion">
+    {% if page_obj.has_previous %}
+        <a href="#"
+           hx-get="{% url 'registros:search' %}?page={{ page_obj.previous_page_number }}"
+           hx-target="#results"
+           hx-include="#search-form">
+            Anterior
+        </a>
+    {% endif %}
+
+    <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+
+    {% if page_obj.has_next %}
+        <a href="#"
+           hx-get="{% url 'registros:search' %}?page={{ page_obj.next_page_number }}"
+           hx-target="#results"
+           hx-include="#search-form">
+            Siguiente
+        </a>
+    {% endif %}
+</div>
+{% endif %}

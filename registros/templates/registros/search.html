@@ -5,7 +5,7 @@
 
 {% block content %}
 <h1>Buscador avanzado de registros sanitarios ISP</h1>
-<form hx-get="{% url 'registros:search' %}" hx-target="#results">
+<form hx-get="{% url 'registros:search' %}" hx-target="#results" id="search-form">
     <input
         type="text"
         name="nombre"
