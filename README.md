@@ -50,6 +50,8 @@ ispch-search/
     parser.py           # parse_file(html) → dict
     normalizers.py      # funciones normalize_*
     loader.py           # load_product(dict, control_legal) → (Product, created)
+    excel.py            # read_registros(path) → {registro: control_legal}
+    scraper.py          # fetch, is_empty_ficha, scrape_registro (helpers compartidos)
     views.py            # search(request) — la vista de búsqueda completa
     urls.py             # app_name = "registros", name = "search"
     admin.py
@@ -63,11 +65,12 @@ ispch-search/
         results.html    # tabla de resultados + paginación (target de HTMX)
     management/commands/
       initial_download.py   # carga masiva: Excel → scrape → parse → DB
+      update_from_excel.py  # diff incremental: scrapea added, borra removed, actualiza cl_changed
       renormalizar.py       # recalcula campos _norm y reporta valores distintos
     tests/
       fixtures/         # fichas HTML reales del ISP para tests reproducibles
   files/                # NO versionado (.gitignore); aquí va el Excel del ISP,
-                        # load.log y failed.txt
+                        # load.log, failed.txt y sin_ficha.txt
 ```
 
 ---
@@ -82,6 +85,11 @@ parse_file → load_product → DB
 - `control_legal` (si el producto es un estupefaciente o psicotrópico) viene de
   la columna `lblLegal` del Excel, **no** de la ficha HTML — por eso es un
   parámetro separado en `load_product` y no parte del diccionario parseado.
+- **Fichas vacías**: HTTP 200 con `nombre`/`registro` en blanco significa que el
+  producto fue renovado recientemente y su número de registro cambió (ej. `/21` → `/26`).
+  El scraper detecta este caso, **no guarda el producto** y loguea el registro en
+  `files/sin_ficha.txt`. La solución definitiva es diffear el Excel nuevo
+  (ver [Actualización incremental](#actualización-incremental-update_from_excel)).
 - La búsqueda consulta la DB directamente; **nunca** consulta el ISP en vivo.
 
 ---
@@ -237,8 +245,9 @@ divide en bloques nocturnos con dos flags que trabajan juntos:
 | Flag | Qué hace |
 |------|----------|
 | `--skip-existing` | Salta los registros ya guardados en la DB (sin petición de red). Es el **mecanismo de reanudación**. |
-| `--max-new N` | Detiene la ejecución después de cargar N registros **nuevos**. Los saltados y fallidos no cuentan. |
-| `--failed-file RUTA` | Dónde se apenden los fallos (por defecto: `files/failed.txt`). |
+| `--max-new N` | Detiene la ejecución después de cargar N registros **nuevos**. Los saltados, fallidos y sin ficha no cuentan. |
+| `--failed-file RUTA` | Dónde se apenden los fallos de red/parse (por defecto: `files/failed.txt`). |
+| `--sin-ficha-file RUTA` | Dónde se apenden las fichas vacías (por defecto: `files/sin_ficha.txt`). |
 
 Ejecuta **el mismo comando** cada noche — `--skip-existing` reanuda
 automáticamente desde donde quedó:
@@ -263,14 +272,17 @@ tail -f files/load.log
 python manage.py shell -c "from registros.models import Product; print(Product.objects.count())"
 ```
 
-### 5. Manejo de fallos
+### 5. Manejo de fallos y fichas vacías
 
-Los registros que fallan (errores de red, errores de parse) se apenden a
-`files/failed.txt` con timestamp y mensaje de error. Como nunca se escribieron a
-la DB, la **siguiente ejecución nocturna con `--skip-existing` los reintenta
-automáticamente** — no hace falta intervención manual. `files/failed.txt` es un
-historial; la fuente de verdad para el progreso general es
-`Product.objects.count()`.
+Hay dos logs distintos con semántica diferente:
+
+| Log | Cuándo se escribe | Qué hacer |
+|-----|-------------------|-----------|
+| `files/failed.txt` | Error de red o de parse (excepción) | La siguiente corrida con `--skip-existing` lo reintenta automáticamente |
+| `files/sin_ficha.txt` | HTTP 200 pero ficha vacía — registro renovado, número cambiado | **No** reintentar la misma URL; se resuelve al diffear el Excel nuevo con `update_from_excel` |
+
+`files/failed.txt` es un historial de errores técnicos; la fuente de verdad para el
+progreso general es `Product.objects.count()`.
 
 ### 6. User-Agent y etiqueta de scraping
 
@@ -301,6 +313,40 @@ No se necesita archivo `.env` — la variable se lee con `os.environ.get`.
 `robots.txt` (devuelve 404), pero scrapear con cortesía significa: delays
 aleatorios (1,5–3 s entre peticiones), backoff exponencial en reintentos,
 estrictamente secuencial.
+
+---
+
+## Actualización incremental (`update_from_excel`)
+
+Cuando el ISP publica un Excel nuevo no es necesario re-scrapear las ~46.000 fichas.
+El comando `update_from_excel` compara el Excel anterior con el nuevo y calcula el delta:
+
+| Categoría | Qué son | Qué hace el comando |
+|-----------|---------|---------------------|
+| `added` | Registros en el nuevo Excel que no estaban en el viejo (productos nuevos o renovados con número cambiado) | Scrapea la ficha y guarda en la DB |
+| `removed` | Registros en el viejo Excel que ya no están en el nuevo (renovados a otro número o dados de baja) | Borra de la DB en CASCADE |
+| `cl_changed` | Mismo registro, `control_legal` distinto entre los dos Excels | Actualiza solo ese campo, sin re-scrapear |
+
+Esto también resuelve el problema de las fichas vacías: el `/21` que antes devolvía ficha
+vacía cae en `removed` (se borra), y el `/26` nuevo cae en `added` (se scrapea y ahora
+sí tiene datos).
+
+### Flujo recomendado
+
+```bash
+# 1. Revisar el diff antes de tocar nada
+python manage.py update_from_excel files/excel-viejo.xls files/excel-nuevo.xls --dry-run
+
+# 2. Si el diff tiene sentido, ejecutar
+python manage.py update_from_excel files/excel-viejo.xls files/excel-nuevo.xls
+```
+
+| Flag | Qué hace |
+|------|----------|
+| `--dry-run` | Muestra el diff (added / removed / cl_changed) sin tocar la red ni la DB |
+| `--limit N` | Scrapea solo los primeros N registros de `added` (para pruebas) |
+| `--failed-file RUTA` | Log de fallos de red/parse (default: `files/failed.txt`) |
+| `--sin-ficha-file RUTA` | Log de fichas vacías (default: `files/sin_ficha.txt`) |
 
 ---
 

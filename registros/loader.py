@@ -39,6 +39,9 @@ def load_product(data: dict, control_legal: str = "") -> tuple[Product, bool]:
 
     Devuelve (producto, created) donde created es True si era nuevo.
     """
+    if not data.get("registro"):
+        raise ValueError("load_product: registro vacío — ficha vacía no debe guardarse")
+
     product, created = Product.objects.get_or_create(
         registro=data["registro"],
         defaults={
