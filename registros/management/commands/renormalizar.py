@@ -1,8 +1,8 @@
 from django.core.management.base import BaseCommand
 from django.db.models import Count
 
-from registros.models import Product, CompanyRole
-from registros.normalizers import normalize_regimen, normalize_via, normalize_funcion
+from registros.models import Product, CompanyRole, Package
+from registros.normalizers import normalize_regimen, normalize_via, normalize_funcion, normalize_shelf_life
 
 
 BATCH_SIZE = 1000
@@ -10,14 +10,15 @@ BATCH_SIZE = 1000
 
 class Command(BaseCommand):
     help = (
-        "Recalcula regimen_norm, via_administracion_norm y funcion_norm "
-        "para todos los registros existentes en la BD. "
+        "Recalcula regimen_norm, via_administracion_norm, funcion_norm y "
+        "periodo_eficacia_norm para todos los registros existentes en la BD. "
         "Re-corrible cuando se ajusten las reglas de normalización."
     )
 
     def handle(self, *args, **options):
         self._backfill_products()
         self._backfill_company_roles()
+        self._backfill_packages()
         self._report()
 
     # ------------------------------------------------------------------
@@ -67,6 +68,27 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS(f"  {updated} roles actualizados."))
 
+    def _backfill_packages(self):
+        self.stdout.write("Actualizando Package.periodo_eficacia_norm...")
+        total = Package.objects.count()
+        updated = 0
+        batch = []
+
+        for pkg in Package.objects.only("id", "periodo_eficacia").iterator(chunk_size=BATCH_SIZE):
+            pkg.periodo_eficacia_norm = normalize_shelf_life(pkg.periodo_eficacia)
+            batch.append(pkg)
+            if len(batch) >= BATCH_SIZE:
+                Package.objects.bulk_update(batch, ["periodo_eficacia_norm"])
+                updated += len(batch)
+                batch = []
+                self.stdout.write(f"  {updated}/{total}...")
+
+        if batch:
+            Package.objects.bulk_update(batch, ["periodo_eficacia_norm"])
+            updated += len(batch)
+
+        self.stdout.write(self.style.SUCCESS(f"  {updated} envases actualizados."))
+
     # ------------------------------------------------------------------
     # Reporte de valores distintos (para revisar resultado y detectar
     # valores nuevos/inesperados en futuras corridas)
@@ -99,6 +121,15 @@ class Command(BaseCommand):
                                .values_list("funcion_norm", flat=True)
                                .annotate(n=Count("id"))
                                .order_by("funcion_norm"),
+            count_field=False,
+        )
+
+        self._print_field_report(
+            "PERIODO_EFICACIA_NORM",
+            Package.objects.exclude(periodo_eficacia_norm="")
+                           .values_list("periodo_eficacia_norm", flat=True)
+                           .annotate(n=Count("id"))
+                           .order_by("periodo_eficacia_norm"),
             count_field=False,
         )
 
