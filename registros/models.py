@@ -42,7 +42,9 @@ class Product(models.Model):
 
     # ---Características---
     regimen = models.CharField(max_length=100, blank=True)
+    regimen_norm = models.CharField(max_length=100, blank=True)
     via_administracion = models.CharField(max_length=100, blank=True)
+    via_administracion_norm = models.CharField(max_length=100, blank=True)
     equivalencia = models.CharField(max_length=100, blank=True, choices=Equivalencia.choices)
     condicion_venta = models.CharField(max_length=100, blank=True, choices=CondicionVenta.choices)
     control_legal   = models.CharField(max_length=100, blank=True, choices=ControlLegal.choices)
@@ -55,7 +57,7 @@ class Product(models.Model):
     raw_html = models.TextField(blank=True)
 
     class Meta:
-        ordering = ["nombre"]
+        # ordering = ["nombre"] se quita porque agrega la columna nombre a las querys de choices de manera silenciosa
         verbose_name = "Producto"
         verbose_name_plural = "Productos"
 

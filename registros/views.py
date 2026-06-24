@@ -78,11 +78,11 @@ def search(request):
 
     if regimen:
         has_filters = True
-        products = products.filter(regimen=regimen)
+        products = products.filter(regimen_norm=regimen)
 
     if via_administracion:
         has_filters = True
-        products = products.filter(via_administracion=via_administracion)
+        products = products.filter(via_administracion_norm=via_administracion)
     
     # ---- Filtros relacionados con el envase ----
 
@@ -146,12 +146,12 @@ def search(request):
     # ---------------------
 
     # Opciones que se obtienen de manera dinámica, a diferencia de estado, equivalencia y condicion_venta, que se espera que no cambien ya que vienen de los selectores del buscador oficial de registros del ISPCH
-    regimen_choices = Product.objects.values_list("regimen", flat=True).distinct().exclude(regimen="")
-    via_administracion_choices = Product.objects.values_list("via_administracion", flat=True).distinct().exclude(via_administracion="")
-    condicion_almacenamiento_choices = Package.objects.values_list("condicion_almacenamiento_norm", flat=True).distinct().exclude(condicion_almacenamiento_norm="")
-    periodo_eficacia_choices = Package.objects.values_list("periodo_eficacia_norm", flat=True).distinct().exclude(periodo_eficacia_norm="")
-    funcion_choices = CompanyRole.objects.values_list("funcion_norm", flat=True).distinct().exclude(funcion_norm="")
-    pais_choices = CompanyRole.objects.values_list("pais_norm", flat=True).distinct().exclude(pais_norm="")
+    regimen_choices = Product.objects.values_list("regimen_norm", flat=True).distinct().exclude(regimen_norm="").order_by("regimen_norm")
+    via_administracion_choices = Product.objects.values_list("via_administracion_norm", flat=True).distinct().exclude(via_administracion_norm="").order_by("via_administracion_norm")
+    condicion_almacenamiento_choices = Package.objects.values_list("condicion_almacenamiento_norm", flat=True).distinct().exclude(condicion_almacenamiento_norm="").order_by("condicion_almacenamiento_norm")
+    periodo_eficacia_choices = Package.objects.values_list("periodo_eficacia_norm", flat=True).distinct().exclude(periodo_eficacia_norm="").order_by("periodo_eficacia_norm")
+    funcion_choices = CompanyRole.objects.values_list("funcion_norm", flat=True).distinct().exclude(funcion_norm="").order_by("funcion_norm")
+    pais_choices = CompanyRole.objects.values_list("pais_norm", flat=True).distinct().exclude(pais_norm="").order_by("pais_norm")
 
     context = {
         "products": products,

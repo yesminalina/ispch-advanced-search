@@ -5,6 +5,9 @@ from .normalizers import (
     normalize_storage_condition,
     normalize_shelf_life,
     normalize_text,
+    normalize_regimen,
+    normalize_via,
+    normalize_funcion,
 )
 
 
@@ -49,8 +52,10 @@ def load_product(data: dict, control_legal: str = "") -> tuple[Product, bool]:
             "fecha_inscripcion":  parse_date(data.get("fecha_inscripcion")),
             "ultima_renovacion":  parse_date(data.get("ultima_renovacion")),
             "prox_renovacion":    parse_date(data.get("prox_renovacion")),
-            "regimen":            data.get("regimen", ""),
-            "via_administracion": data.get("via_administracion", ""),
+            "regimen":                data.get("regimen", ""),
+            "regimen_norm":           normalize_regimen(data.get("regimen", "")),
+            "via_administracion":     data.get("via_administracion", ""),
+            "via_administracion_norm": normalize_via(data.get("via_administracion", "")),
             "condicion_venta":    data.get("condicion_venta", ""),
             "farmacovigilancia":  data.get("farmacovigilancia", ""),
             "indicacion":         data.get("indicacion", ""),
@@ -70,8 +75,10 @@ def load_product(data: dict, control_legal: str = "") -> tuple[Product, bool]:
         product.fecha_inscripcion = parse_date(data.get("fecha_inscripcion"))
         product.ultima_renovacion = parse_date(data.get("ultima_renovacion"))
         product.prox_renovacion   = parse_date(data.get("prox_renovacion"))
-        product.regimen           = data.get("regimen", "")
-        product.via_administracion = data.get("via_administracion", "")
+        product.regimen                = data.get("regimen", "")
+        product.regimen_norm           = normalize_regimen(data.get("regimen", ""))
+        product.via_administracion     = data.get("via_administracion", "")
+        product.via_administracion_norm = normalize_via(data.get("via_administracion", ""))
         product.condicion_venta   = data.get("condicion_venta", "")
         product.farmacovigilancia = data.get("farmacovigilancia", "")
         product.indicacion        = data.get("indicacion", "")
@@ -110,7 +117,7 @@ def load_product(data: dict, control_legal: str = "") -> tuple[Product, bool]:
         CompanyRole.objects.create(
             producto=product,
             funcion=empresa.get("funcion", ""),
-            funcion_norm=normalize_text(empresa.get("funcion", "")),
+            funcion_norm=normalize_funcion(empresa.get("funcion", "")),
             razon_social=empresa.get("razon_social", ""),
             pais=empresa.get("pais", ""),
             pais_norm=normalize_text(empresa.get("pais", "")),
