@@ -133,16 +133,6 @@ def normalize_funcion(raw: str) -> str:
 # Normalizadores de Package (sin cambios)
 # ---------------------------------------------------------------------------
 
-def normalize_storage_condition(raw: str) -> str:
-    if not raw:
-        return ""
-    cleaned = raw.replace("º", "°").replace("Âº", "°").strip()
-    match = re.search(r"(\d+)\s*°[cC]", cleaned)
-    if match:
-        temp = match.group(1)
-        return f"Almacenar a no más de {temp}°C"
-    return cleaned.title()
-
 
 def _strip_accents(s: str) -> str:
     """Quita tildes/diacríticos; usado para comparar tokens de unidad."""

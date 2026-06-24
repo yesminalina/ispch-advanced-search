@@ -2,7 +2,6 @@ from datetime import datetime
 from django.utils import timezone
 from .models import Product, Package, CompanyRole, ActiveIngredient
 from .normalizers import (
-    normalize_storage_condition,
     normalize_shelf_life,
     normalize_text,
     normalize_regimen,
@@ -105,9 +104,6 @@ def load_product(data: dict, control_legal: str = "") -> tuple[Product, bool]:
                 envase.get("periodo_eficacia", "")
             ),
             condicion_almacenamiento=envase.get("condicion_almacenamiento", ""),
-            condicion_almacenamiento_norm=normalize_storage_condition(
-                envase.get("condicion_almacenamiento", "")
-            ),
             contenido=envase.get("contenido", ""),
             unidad_medida=envase.get("unidad_medida", ""),
         )

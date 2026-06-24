@@ -73,7 +73,6 @@ class Package(models.Model):
     periodo_eficacia = models.CharField(max_length=50, blank=True)
     periodo_eficacia_norm = models.CharField(max_length=50, blank=True)
     condicion_almacenamiento = models.CharField(max_length=255, blank=True)
-    condicion_almacenamiento_norm = models.CharField(max_length=255, blank=True)
     contenido = models.CharField(max_length=100, blank=True)
     unidad_medida = models.CharField(max_length=50, blank=True)
 

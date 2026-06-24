@@ -75,12 +75,11 @@
             <option value="{{via}}">{{via}}</option>
         {% endfor %}
     </select>
-    <select name="condicion_almacenamiento">
-        <option value="">Condición de Almacenamiento</option>
-        {% for condicion in condicion_almacenamiento_choices %}
-            <option value="{{condicion}}">{{condicion}}</option>
-        {% endfor %}
-    </select>
+    <input
+        type="text"
+        name="condicion_almacenamiento"
+        placeholder="Condición de almacenamiento"
+    >
     <select name="periodo_eficacia">
         <option value="">Periodo de Eficacia</option>
         {% for periodo in periodo_eficacia_choices %}
