@@ -14,8 +14,9 @@ db.sqlite3-journal
 # Secrets / environment
 .env
 
-# Local Claude instructions (not versioned for now)
+# Local Claude instructions and working notes (not versioned for now)
 CLAUDE.md
+notes/
 
 # Temporary scraping output
 ficha_prueba.html
