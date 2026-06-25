@@ -241,7 +241,7 @@
            value="{{ page_obj.number }}"
            class="form-input w-16 text-center py-1"
            aria-label="Ir a página">
-    <span>de {{ page_obj.paginator.num_pages }}</span>
+    <span class="whitespace-nowrap">de {{ page_obj.paginator.num_pages }}</span>
   </form>
   <div>
     {% if page_obj.has_next %}
