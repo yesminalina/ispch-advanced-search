@@ -4,131 +4,185 @@
 {% block title %}Buscador avanzado de registros sanitarios ISP{% endblock %}
 
 {% block content %}
-<h1>Buscador avanzado de registros sanitarios ISP</h1>
-<form hx-get="{% url 'registros:search' %}" hx-target="#results" id="search-form">
-    <input
-        type="text"
-        name="nombre"
-        placeholder="Nombre del producto"
-    >
-    <input
-        type="text"
-        name="nombre_pa"
-        placeholder="Principio activo"
-    >
-    <input
-        type="text"
-        name="titular"
-        placeholder="Titular"
-    >
-    <input
-        type="text"
-        name="registro"
-        placeholder="Número de registro"
-    >
-    <input
-        type="text"
-        name="resolucion"
-        placeholder="Resolución"
-    >
-    <br>
-    <input
-        type="text"
-        name="descripcion"
-        placeholder="Descripción del envase"
-    >
-    <br>
-    <select name="estado">
-        <option value="">Estado</option>
-        {% for value, key in estado_choices %}
-            <option value="{{value}}">{{key}}</option>
+
+<div class="mb-6">
+  <h1 class="font-display text-2xl font-bold text-navy tracking-tight">Buscador avanzado</h1>
+  <p class="text-sm text-muted mt-1">Registros Sanitarios del ISP — Chile</p>
+</div>
+
+<form hx-get="{% url 'registros:search' %}" hx-target="#results" id="search-form"
+      class="bg-white rounded-lg border border-border p-5 mb-6">
+
+  <!-- Fila 1: campos de texto principales -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-3">
+    <div>
+      <label class="form-label">Nombre del producto</label>
+      <input type="text" name="nombre" class="form-input" placeholder="ej. paracetamol">
+    </div>
+    <div>
+      <label class="form-label">Principio activo</label>
+      <input type="text" name="nombre_pa" class="form-input" placeholder="ej. ibuprofeno">
+    </div>
+    <div>
+      <label class="form-label">Titular</label>
+      <input type="text" name="titular" class="form-input" placeholder="razón social">
+    </div>
+    <div>
+      <label class="form-label">N° de registro</label>
+      <input type="text" name="registro" class="form-input font-mono" placeholder="ej. F-1234/21">
+    </div>
+    <div>
+      <label class="form-label">Resolución</label>
+      <input type="text" name="resolucion" class="form-input" placeholder="ej. 1234">
+    </div>
+  </div>
+
+  <!-- Fila 2: dropdowns de características -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-3">
+    <div>
+      <label class="form-label">Estado</label>
+      <select name="estado" class="form-input">
+        <option value="">Todos</option>
+        {% for value, label in estado_choices %}
+          <option value="{{ value }}">{{ label }}</option>
         {% endfor %}
-    </select>
-    <select name="equivalencia">
-        <option value="">Equivalencia Terapéutica o Biosimilar</option>
-        {% for value, key in equivalencia_choices %}
-            <option value="{{value}}">{{key}}</option>
+      </select>
+    </div>
+    <div>
+      <label class="form-label">Condición de venta</label>
+      <select name="condicion_venta" class="form-input">
+        <option value="">Todas</option>
+        {% for value, label in condicion_venta_choices %}
+          <option value="{{ value }}">{{ label }}</option>
         {% endfor %}
-    </select>
-    <select name="condicion_venta">
-        <option value="">Condición de Venta</option>
-        {% for value, key in condicion_venta_choices %}
-            <option value="{{value}}">{{key}}</option>
+      </select>
+    </div>
+    <div>
+      <label class="form-label">Equivalencia</label>
+      <select name="equivalencia" class="form-input">
+        <option value="">Todas</option>
+        {% for value, label in equivalencia_choices %}
+          <option value="{{ value }}">{{ label }}</option>
         {% endfor %}
-    </select>
-    <select name="control_legal">
-        <option value="">Control Legal</option>
-        {% for value, key in control_legal_choices %}
-            <option value="{{value}}">{{key}}</option>
+      </select>
+    </div>
+    <div>
+      <label class="form-label">Control legal</label>
+      <select name="control_legal" class="form-input">
+        <option value="">Todos</option>
+        {% for value, label in control_legal_choices %}
+          <option value="{{ value }}">{{ label }}</option>
         {% endfor %}
-    </select>
-    <br>
-    <select name="regimen">
-        <option value="">Regimen</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Fila 3: régimen, vía, envase -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-3">
+    <div>
+      <label class="form-label">Régimen</label>
+      <select name="regimen" class="form-input">
+        <option value="">Todos</option>
         {% for regimen in regimen_choices %}
-            <option value="{{regimen}}">{{regimen}}</option>
+          <option value="{{ regimen }}">{{ regimen }}</option>
         {% endfor %}
-    </select>
-    <select name="via_administracion">
-        <option value="">Vía de Administración</option>
+      </select>
+    </div>
+    <div>
+      <label class="form-label">Vía de administración</label>
+      <select name="via_administracion" class="form-input">
+        <option value="">Todas</option>
         {% for via in via_administracion_choices %}
-            <option value="{{via}}">{{via}}</option>
+          <option value="{{ via }}">{{ via }}</option>
         {% endfor %}
-    </select>
-    <input
-        type="text"
-        name="condicion_almacenamiento"
-        placeholder="Condición de almacenamiento"
-    >
-    <select name="periodo_eficacia">
-        <option value="">Periodo de Eficacia</option>
+      </select>
+    </div>
+    <div>
+      <label class="form-label">Período de eficacia</label>
+      <select name="periodo_eficacia" class="form-input">
+        <option value="">Todos</option>
         {% for periodo in periodo_eficacia_choices %}
-            <option value="{{periodo}}">{{periodo}}</option>
+          <option value="{{ periodo }}">{{ periodo }}</option>
         {% endfor %}
-    </select>
-    <br>
-    <select name="funcion" id="funcion-empresa">
-        <option value="">Función de empresa</option>
+      </select>
+    </div>
+    <div>
+      <label class="form-label">Cond. de almacenamiento</label>
+      <input type="text" name="condicion_almacenamiento" class="form-input" placeholder="ej. refrigerar">
+    </div>
+  </div>
+
+  <!-- Fila 4: descripción de envase + empresa -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-3">
+    <div>
+      <label class="form-label">Descripción del envase</label>
+      <input type="text" name="descripcion" class="form-input" placeholder="ej. blíster">
+    </div>
+    <div>
+      <label class="form-label">Función de empresa</label>
+      <select name="funcion" id="funcion-empresa" class="form-input">
+        <option value="">Todas</option>
         {% for funcion in funcion_choices %}
-            <option value="{{funcion}}">{{funcion}}</option>
-        {% endfor%}
-    </select>
-    <input
-        type="text"
-        name="razon_social"
-        placeholder="razón social de la empresa"
-        id="razon-social-input"
-        disabled
-    >
-    <select name="pais" id="pais-select" disabled>
-        <option value="">País</option>
+          <option value="{{ funcion }}">{{ funcion }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label class="form-label">Razón social</label>
+      <input type="text" name="razon_social" id="razon-social-input" class="form-input"
+             placeholder="nombre de la empresa" disabled>
+    </div>
+    <div>
+      <label class="form-label">País</label>
+      <select name="pais" id="pais-select" class="form-input" disabled>
+        <option value="">Todos</option>
         {% for pais in pais_choices %}
-            <option value="{{pais}}">{{pais}}</option>
-        {% endfor%}
-    </select>
-    <br>
-    <label>Fecha de inscripción:</label>
-    <input type="date" name="inscripcion_from">
-    <span>hasta</span>
-    <input type="date" name="inscripcion_to">
-    <br>
-    <br>
-    <label>Fecha de última renovación:</label>
-    <input type="date" name="ultima_renovacion_from">
-    <span>hasta</span>
-    <input type="date" name="ultima_renovacion_to">
-    <br>
-    <br>
-    <label>Fecha de próxima renovación:</label>
-    <input type="date" name="prox_renovacion_from">
-    <span>hasta</span>
-    <input type="date" name="prox_renovacion_to">
-    <br>
-    <button type="submit">Buscar</button>
+          <option value="{{ pais }}">{{ pais }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+  <!-- Fila 5: rangos de fecha -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
+    <div>
+      <label class="form-label">Fecha de inscripción</label>
+      <div class="flex items-center gap-2">
+        <input type="date" name="inscripcion_from" class="form-input">
+        <span class="text-muted text-xs shrink-0">hasta</span>
+        <input type="date" name="inscripcion_to" class="form-input">
+      </div>
+    </div>
+    <div>
+      <label class="form-label">Última renovación</label>
+      <div class="flex items-center gap-2">
+        <input type="date" name="ultima_renovacion_from" class="form-input">
+        <span class="text-muted text-xs shrink-0">hasta</span>
+        <input type="date" name="ultima_renovacion_to" class="form-input">
+      </div>
+    </div>
+    <div>
+      <label class="form-label">Próxima renovación</label>
+      <div class="flex items-center gap-2">
+        <input type="date" name="prox_renovacion_from" class="form-input">
+        <span class="text-muted text-xs shrink-0">hasta</span>
+        <input type="date" name="prox_renovacion_to" class="form-input">
+      </div>
+    </div>
+  </div>
+
+  <!-- Botón -->
+  <div class="flex justify-end">
+    <button type="submit"
+            class="px-6 py-2 rounded bg-teal text-white text-sm font-semibold hover:bg-teal-hover active:scale-95 transition-all">
+      Buscar
+    </button>
+  </div>
+
 </form>
 
 <div id="results">
-    {% include "registros/partials/results.html" %}
+  {% include "registros/partials/results.html" %}
 </div>
 
 <script src="{% static 'registros/js/search-form.js' %}" defer></script>

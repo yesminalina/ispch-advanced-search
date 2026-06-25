@@ -24,6 +24,12 @@ ficha_prueba.html
 # ISP Excel source files (not versioned; path passed via CLI argument)
 files/
 
+# Node / Tailwind build
+node_modules/
+
+# Playwright MCP — screenshots y snapshots de sesiones de desarrollo
+.playwright-mcp/
+
 # macOS
 .DS_Store
 

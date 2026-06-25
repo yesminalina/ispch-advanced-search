@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+/* ── Tokens de diseño ───────────────────────────────────────────────────────
+   Instrumento clínico con carácter.
+   Paleta: navy oscuro (header) + teal (acento único) + blancos clínicos.
+   Tipografía: IBM Plex Sans/Mono (diseñadas para datos técnicos) + Syne (display).
+   ────────────────────────────────────────────────────────────────────────── */
+@theme {
+  /* Colores */
+  --color-navy:        #0F2443;
+  --color-navy-light:  #1A3560;
+  --color-teal:        #0E7A6E;
+  --color-teal-hover:  #0B6660;
+  --color-teal-light:  #E6F4F2;
+  --color-surface:     #F7F8FA;
+  --color-border:      #E2E5EA;
+  --color-text:        #1A1F2E;
+  --color-muted:       #5A6478;
+  --color-mono-bg:     #EEF1F5;
+
+  /* Tipografía */
+  --font-sans:    'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+  --font-display: 'Syne', system-ui, sans-serif;
+}
+
+/* ── Eliminar triángulo nativo de <summary> ─────────────────────────────── */
+@layer base {
+  summary {
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+}
+
+/* ── Grid de resultados ─────────────────────────────────────────────────────
+   Columnas fijas (no fr) para que overflow-x-auto funcione correctamente.
+   Misma definición compartida entre el header y cada <summary> de fila.
+   Total: ~85rem (~1360px).
+   ────────────────────────────────────────────────────────────────────────── */
+@layer components {
+  .results-grid {
+    display: grid;
+    grid-template-columns:
+      8rem          /* registro      */
+      16rem         /* nombre        */
+      13rem         /* titular       */
+      6.5rem        /* estado        */
+      7rem          /* cond. venta   */
+      5.5rem        /* equivalencia  */
+      6.5rem        /* control legal */
+      12rem         /* régimen       */
+      5.5rem        /* inscripción   */
+      5.5rem        /* próx. renov.  */
+      2.5rem        /* link ficha    */
+      2rem;         /* chevron       */
+  }
+}
+
+/* ── Chips de estado ────────────────────────────────────────────────────────
+   Estilos base repetidos en cada variante (no se puede @apply otra clase
+   de components en la misma capa en Tailwind v4).
+   ────────────────────────────────────────────────────────────────────────── */
+@layer components {
+  .chip-vigente {
+    @apply inline-block rounded px-2 py-0.5 text-xs font-medium leading-tight whitespace-nowrap bg-emerald-100 text-emerald-800;
+  }
+  .chip-no-vigente {
+    @apply inline-block rounded px-2 py-0.5 text-xs font-medium leading-tight whitespace-nowrap bg-gray-100 text-gray-500;
+  }
+  .chip-suspension {
+    @apply inline-block rounded px-2 py-0.5 text-xs font-medium leading-tight whitespace-nowrap bg-amber-100 text-amber-800;
+  }
+  .chip-psicotropico {
+    @apply inline-block rounded px-2 py-0.5 text-xs font-medium leading-tight whitespace-nowrap bg-violet-100 text-violet-800;
+  }
+  .chip-estupefaciente {
+    @apply inline-block rounded px-2 py-0.5 text-xs font-medium leading-tight whitespace-nowrap bg-red-100 text-red-700;
+  }
+
+  /* Código de registro / resolución: siempre en mono con fondo tenue */
+  .code-id {
+    @apply font-mono text-sm bg-mono-bg text-text rounded px-1.5 py-0.5;
+  }
+
+  /* Celda de la grid-tabla de resultados */
+  .result-cell {
+    @apply flex items-center text-sm text-text leading-snug py-3 px-2 overflow-hidden;
+  }
+
+  /* Sección en el panel de detalle */
+  .detail-section {
+    @apply mb-4;
+  }
+  .detail-section-title {
+    @apply text-xs font-semibold uppercase tracking-widest text-muted mb-2 pb-1 border-b border-border;
+  }
+  .detail-kv {
+    @apply flex gap-2 text-sm mb-1;
+  }
+  .detail-label {
+    @apply text-muted shrink-0 w-40;
+  }
+  .detail-value {
+    @apply text-text;
+  }
+
+  /* Input y select del formulario */
+  .form-input {
+    @apply w-full rounded border border-border bg-white px-3 py-2 text-sm text-text
+           placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-teal focus:border-teal
+           disabled:bg-surface disabled:text-muted disabled:cursor-not-allowed
+           transition-colors;
+  }
+  .form-label {
+    @apply block text-xs font-medium text-muted mb-1 uppercase tracking-wide;
+  }
+}

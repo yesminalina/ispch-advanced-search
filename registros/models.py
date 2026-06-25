@@ -1,4 +1,9 @@
+from urllib.parse import quote
+
 from django.db import models
+
+from .constants import BASE_URL
+
 
 class Product(models.Model):
 
@@ -61,8 +66,14 @@ class Product(models.Model):
         verbose_name = "Producto"
         verbose_name_plural = "Productos"
 
+    @property
+    def ficha_url(self):
+        """URL pública de la ficha en el Registro Sanitario ISP."""
+        return f"{BASE_URL}{quote(self.registro, safe='')}"
+
     def __str__(self):
         return f"{self.registro} — {self.nombre}"
+
 
 class Package(models.Model):
     producto = models.ForeignKey(

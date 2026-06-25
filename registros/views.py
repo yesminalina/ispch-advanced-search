@@ -33,7 +33,9 @@ def search(request):
     prox_renovacion_from = request.GET.get("prox_renovacion_from","")
     prox_renovacion_to = request.GET.get("prox_renovacion_to","")
 
-    products = Product.objects.all()
+    products = Product.objects.prefetch_related(
+        "packagings", "company_roles", "active_ingredients"
+    )
     has_filters = False
 
     if nombre:

@@ -11,10 +11,9 @@ from urllib.parse import quote
 
 import requests
 
+from .constants import BASE_URL
 from .parser import parse_file
 from .loader import load_product
-
-BASE_URL    = "https://registrosanitario.ispch.gob.cl/Ficha.aspx?RegistroISP="
 RETRY_WAITS = [5, 15, 30]  # segundos entre reintentos (1 intento + 3 reintentos)
 TIMEOUT     = 15
 

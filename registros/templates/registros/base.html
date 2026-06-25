@@ -5,9 +5,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Buscador Avanzado de Registros ISP{% endblock %}</title>
+
+    <!-- Fuentes: IBM Plex Sans + Mono (datos técnicos) · Syne (display) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'registros/css/app.css' %}">
     <script src="{% static 'registros/js/htmx.min.js' %}"></script>
 </head>
-<body>
-    {% block content %}{% endblock %}
+<body class="bg-surface font-sans text-text antialiased">
+
+    <!-- Barra superior -->
+    <header class="bg-navy text-white">
+        <div class="max-w-screen-xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-3">
+            <span class="font-display text-xs font-semibold uppercase tracking-[0.2em] text-white/50">Buscador</span>
+            <span class="text-white/20">·</span>
+            <span class="font-display text-sm font-bold tracking-tight">Registro Sanitario</span>
+        </div>
+    </header>
+
+    <main class="max-w-screen-xl mx-auto px-4 sm:px-6 py-6">
+        {% block content %}{% endblock %}
+    </main>
+
 </body>
 </html>

@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@tailwindcss/cli": "^4.3.1",
+    "tailwindcss": "^4.3.1"
+  },
+  "scripts": {
+    "dev:css": "tailwindcss -i registros/static/registros/css/input.css -o registros/static/registros/css/app.css --watch",
+    "build:css": "tailwindcss -i registros/static/registros/css/input.css -o registros/static/registros/css/app.css --minify"
+  }
+}
