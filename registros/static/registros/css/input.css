@@ -105,6 +105,12 @@
     @apply text-text;
   }
 
+  /* Fila de tres columnas para empresas relacionadas: función | razón social | país */
+  .detail-role {
+    @apply grid gap-2 text-sm mb-1 items-baseline;
+    grid-template-columns: 14rem 1fr 7rem;
+  }
+
   /* Input y select del formulario */
   .form-input {
     @apply w-full rounded border border-border bg-white px-3 py-2 text-sm text-text

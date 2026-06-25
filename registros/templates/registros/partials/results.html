@@ -86,8 +86,8 @@
     </summary>
 
     <!-- Panel de detalle (4 secciones) -->
-    <div class="bg-surface border-t border-border border-l-2 border-l-teal px-6 py-5 min-w-max">
-      <div class="grid grid-cols-2 gap-x-12 gap-y-0 max-w-4xl">
+    <div class="bg-surface border-t border-border border-l-2 border-l-teal px-6 py-5">
+      <div class="grid grid-cols-2 gap-x-12 gap-y-0">
 
         <!-- Columna izquierda: datos del registro + principios activos -->
         <div>
@@ -174,11 +174,10 @@
           <div class="detail-section">
             <p class="detail-section-title">Empresas relacionadas</p>
             {% for rol in product.company_roles.all %}
-            <div class="detail-kv">
-              <span class="detail-label">{{ rol.funcion }}</span>
-              <span class="detail-value">
-                {{ rol.razon_social }}{% if rol.pais %} <span class="text-muted">({{ rol.pais }})</span>{% endif %}
-              </span>
+            <div class="detail-role">
+              <span class="text-muted">{{ rol.funcion }}</span>
+              <span class="text-text">{{ rol.razon_social }}</span>
+              <span class="text-muted">{{ rol.pais }}</span>
             </div>
             {% empty %}
             <p class="text-xs text-muted italic">Sin datos</p>
