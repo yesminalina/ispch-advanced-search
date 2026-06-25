@@ -251,3 +251,8 @@ def normalize_text(raw: str) -> str:
     if not raw:
         return ""
     return re.sub(r"\s+", " ", raw.strip()).title()
+
+
+def fold(s: str) -> str:
+    """Quita tildes del término de búsqueda para igualarlo al lado de la columna."""
+    return _strip_accents(s) if s else ""

@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator
 from .models import Product, Package, CompanyRole
+from .normalizers import fold
 
 def search(request):
     nombre = request.GET.get("nombre", "")
@@ -40,15 +41,15 @@ def search(request):
 
     if nombre:
         has_filters = True
-        products = products.filter(nombre__icontains=nombre)
-    
+        products = products.filter(nombre__unaccent__icontains=fold(nombre))
+
     if nombre_pa:
         has_filters = True
-        products = products.filter(active_ingredients__nombre_pa__icontains=nombre_pa)
+        products = products.filter(active_ingredients__nombre_pa__unaccent__icontains=fold(nombre_pa))
 
     if titular:
         has_filters = True
-        products = products.filter(titular__icontains=titular)
+        products = products.filter(titular__unaccent__icontains=fold(titular))
     
     if registro:
         has_filters = True
@@ -60,7 +61,7 @@ def search(request):
 
     if descripcion:
         has_filters = True
-        products = products.filter(packagings__descripcion__icontains=descripcion)
+        products = products.filter(packagings__descripcion__unaccent__icontains=fold(descripcion))
     
     if estado:
         has_filters = True
@@ -90,7 +91,7 @@ def search(request):
 
     if condicion_almacenamiento:
         has_filters = True
-        products = products.filter(packagings__condicion_almacenamiento__icontains=condicion_almacenamiento)
+        products = products.filter(packagings__condicion_almacenamiento__unaccent__icontains=fold(condicion_almacenamiento))
 
     if periodo_eficacia:
         has_filters = True
@@ -103,7 +104,7 @@ def search(request):
         company_filters["company_roles__funcion_norm"] = funcion
 
         if razon_social:
-            company_filters["company_roles__razon_social__icontains"] = razon_social
+            company_filters["company_roles__razon_social__unaccent__icontains"] = fold(razon_social)
         
         if pais:
             company_filters["company_roles__pais_norm"] = pais
