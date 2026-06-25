@@ -170,20 +170,6 @@
 
         <!-- Columna derecha: empresas + envases -->
         <div>
-
-          <div class="detail-section">
-            <p class="detail-section-title">Empresas relacionadas</p>
-            {% for rol in product.company_roles.all %}
-            <div class="detail-role">
-              <span class="text-muted">{{ rol.funcion }}</span>
-              <span class="text-text">{{ rol.razon_social }}</span>
-              <span class="text-muted">{{ rol.pais }}</span>
-            </div>
-            {% empty %}
-            <p class="text-xs text-muted italic">Sin datos</p>
-            {% endfor %}
-          </div>
-
           <div class="detail-section">
             <p class="detail-section-title">Envases</p>
             {% for envase in product.packagings.all %}
@@ -201,6 +187,20 @@
             <p class="text-xs text-muted italic">Sin datos</p>
             {% endfor %}
           </div>
+          
+          <div class="detail-section">
+            <p class="detail-section-title">Empresas relacionadas</p>
+            {% for rol in product.company_roles.all %}
+            <div class="detail-role">
+              <span class="text-muted">{{ rol.funcion }}</span>
+              <span class="text-text">{{ rol.razon_social }}</span>
+              <span class="text-muted">{{ rol.pais }}</span>
+            </div>
+            {% empty %}
+            <p class="text-xs text-muted italic">Sin datos</p>
+            {% endfor %}
+          </div>
+
 
         </div>
 
