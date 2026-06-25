@@ -37,7 +37,7 @@
     </div>
   </div>
 
-  <!-- Fila 2: dropdowns de características -->
+  <!-- Fila 2: estado, condición de venta, control legal, régimen -->
   <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-3">
     <div>
       <label class="form-label">Estado</label>
@@ -58,15 +58,6 @@
       </select>
     </div>
     <div>
-      <label class="form-label">Equivalencia</label>
-      <select name="equivalencia" class="form-input">
-        <option value="">Todas</option>
-        {% for value, label in equivalencia_choices %}
-          <option value="{{ value }}">{{ label }}</option>
-        {% endfor %}
-      </select>
-    </div>
-    <div>
       <label class="form-label">Control legal</label>
       <select name="control_legal" class="form-input">
         <option value="">Todos</option>
@@ -75,16 +66,25 @@
         {% endfor %}
       </select>
     </div>
-  </div>
-
-  <!-- Fila 3: régimen, vía, envase -->
-  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-3">
     <div>
       <label class="form-label">Régimen</label>
       <select name="regimen" class="form-input">
         <option value="">Todos</option>
         {% for regimen in regimen_choices %}
           <option value="{{ regimen }}">{{ regimen }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+  <!-- Fila 3: equivalencia, vía, período eficacia, cond. almacenamiento, descripción envase -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-3">
+    <div>
+      <label class="form-label">Equivalencia</label>
+      <select name="equivalencia" class="form-input">
+        <option value="">Todas</option>
+        {% for value, label in equivalencia_choices %}
+          <option value="{{ value }}">{{ label }}</option>
         {% endfor %}
       </select>
     </div>
@@ -110,14 +110,19 @@
       <label class="form-label">Cond. de almacenamiento</label>
       <input type="text" name="condicion_almacenamiento" class="form-input" placeholder="ej. refrigerar">
     </div>
-  </div>
-
-  <!-- Fila 4: descripción de envase + empresa -->
-  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-3">
     <div>
       <label class="form-label">Descripción del envase</label>
       <input type="text" name="descripcion" class="form-input" placeholder="ej. blíster">
     </div>
+  </div>
+
+  <!-- Subtítulo empresas -->
+  <div class="mt-5 mb-3 border-l-2 border-teal pl-2.5">
+    <h2 class="text-xs font-semibold uppercase tracking-wider text-navy">Empresas relacionadas</h2>
+  </div>
+
+  <!-- Fila 5: función, razón social, país -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-3">
     <div>
       <label class="form-label">Función de empresa</label>
       <select name="funcion" id="funcion-empresa" class="form-input">
