@@ -35,26 +35,25 @@
 }
 
 /* ── Grid de resultados ─────────────────────────────────────────────────────
-   Columnas fijas (no fr) para que overflow-x-auto funcione correctamente.
-   Misma definición compartida entre el header y cada <summary> de fila.
-   Total: ~85rem (~1360px).
+   nombre y titular usan minmax(min, fr) para llenar el ancho disponible.
+   Las demás columnas son fijas. width: 100% estira la grid al contenedor.
+   En pantallas angostas los mínimos de minmax activan overflow-x-auto.
    ────────────────────────────────────────────────────────────────────────── */
 @layer components {
   .results-grid {
     display: grid;
+    width: 100%;
     grid-template-columns:
-      8rem          /* registro      */
-      16rem         /* nombre        */
-      13rem         /* titular       */
-      6.5rem        /* estado        */
-      7rem          /* cond. venta   */
-      5.5rem        /* equivalencia  */
-      6.5rem        /* control legal */
-      12rem         /* régimen       */
-      5.5rem        /* inscripción   */
-      5.5rem        /* próx. renov.  */
-      2.5rem        /* link ficha    */
-      2rem;         /* chevron       */
+      8rem                  /* registro      */
+      minmax(12rem, 1.5fr)  /* nombre        */
+      minmax(8rem, 1fr)     /* titular       */
+      6.5rem                /* estado        */
+      7rem                  /* cond. venta   */
+      5.5rem                /* equivalencia  */
+      5.5rem                /* inscripción   */
+      5.5rem                /* próx. renov.  */
+      2.5rem                /* link ficha    */
+      2rem;                 /* chevron       */
   }
 }
 

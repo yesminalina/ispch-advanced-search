@@ -8,15 +8,13 @@
 <div class="overflow-x-auto rounded-lg border border-border">
 
   <!-- Cabecera fija -->
-  <div class="results-grid bg-navy text-white/60 text-xs font-semibold uppercase tracking-wider min-w-max">
+  <div class="results-grid bg-navy text-white/60 text-xs font-semibold uppercase tracking-wider">
     <div class="py-2.5 px-2 whitespace-nowrap">Registro</div>
     <div class="py-2.5 px-2 whitespace-nowrap">Nombre</div>
     <div class="py-2.5 px-2 whitespace-nowrap">Titular</div>
     <div class="py-2.5 px-2 whitespace-nowrap">Estado</div>
     <div class="py-2.5 px-2 whitespace-nowrap">Cond. venta</div>
     <div class="py-2.5 px-2 whitespace-nowrap">Equiv.</div>
-    <div class="py-2.5 px-2 whitespace-nowrap">Ctrl. legal</div>
-    <div class="py-2.5 px-2 whitespace-nowrap">Régimen</div>
     <div class="py-2.5 px-2 whitespace-nowrap">Inscripción</div>
     <div class="py-2.5 px-2 whitespace-nowrap">Próx. renov.</div>
     <div class="py-2.5 px-2"></div>
@@ -25,7 +23,7 @@
 
   <!-- Filas de resultados -->
   {% for product in page_obj %}
-  <details class="group border-t border-border min-w-max">
+  <details class="group border-t border-border">
 
     <summary class="results-grid items-center bg-white hover:bg-teal-light cursor-pointer transition-colors duration-100">
 
@@ -56,18 +54,6 @@
 
       <!-- Equivalencia -->
       <div class="result-cell text-xs text-muted">{{ product.equivalencia }}</div>
-
-      <!-- Control legal -->
-      <div class="result-cell">
-        {% if product.control_legal == 'Psicotrópico' %}
-          <span class="chip-psicotropico">Psicotrópico</span>
-        {% elif product.control_legal == 'Estupefaciente' %}
-          <span class="chip-estupefaciente">Estupefaciente</span>
-        {% endif %}
-      </div>
-
-      <!-- Régimen -->
-      <div class="result-cell text-xs text-muted">{{ product.regimen_norm }}</div>
 
       <!-- Fecha inscripción -->
       <div class="result-cell text-xs text-muted">{{ product.fecha_inscripcion|date:"d/m/Y"|default:"—" }}</div>
@@ -108,6 +94,26 @@
 
           <div class="detail-section">
             <p class="detail-section-title">Datos del registro</p>
+            <div class="detail-kv">
+              <span class="detail-label">Control legal</span>
+              <span class="detail-value">
+                {% if product.control_legal == 'Psicotrópico' %}
+                  <span class="chip-psicotropico">Psicotrópico</span>
+                {% elif product.control_legal == 'Estupefaciente' %}
+                  <span class="chip-estupefaciente">Estupefaciente</span>
+                {% elif product.control_legal %}
+                  {{ product.control_legal }}
+                {% else %}
+                  <span class="text-muted">—</span>
+                {% endif %}
+              </span>
+            </div>
+            {% if product.regimen_norm %}
+            <div class="detail-kv">
+              <span class="detail-label">Régimen</span>
+              <span class="detail-value">{{ product.regimen_norm }}</span>
+            </div>
+            {% endif %}
             {% if product.ref_tramite %}
             <div class="detail-kv">
               <span class="detail-label">Ref. trámite</span>
