@@ -231,7 +231,18 @@
     </a>
     {% endif %}
   </div>
-  <span class="text-muted">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+  <form hx-get="{% url 'registros:search' %}"
+        hx-target="#results"
+        hx-include="#search-form"
+        class="flex items-center gap-2 text-muted text-sm">
+    <label for="page-input">Página</label>
+    <input id="page-input" type="number" name="page"
+           min="1" max="{{ page_obj.paginator.num_pages }}"
+           value="{{ page_obj.number }}"
+           class="form-input w-16 text-center py-1"
+           aria-label="Ir a página">
+    <span>de {{ page_obj.paginator.num_pages }}</span>
+  </form>
   <div>
     {% if page_obj.has_next %}
     <a href="#"
