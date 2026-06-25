@@ -32,7 +32,7 @@ class Product(models.Model):
 
     # ---Identificación---
     registro = models.CharField(max_length=30, unique=True)
-    nombre = models.CharField(max_length=255)
+    nombre = models.CharField(max_length=500)
     ref_tramite = models.CharField(max_length=50, blank=True)
 
     # ---Titular y estado---
@@ -80,7 +80,7 @@ class Package(models.Model):
         Product, on_delete=models.CASCADE, related_name="packagings"
     )
     tipo_envase = models.CharField(max_length=100, blank=True)
-    descripcion = models.CharField(max_length=500, blank=True)
+    descripcion = models.CharField(max_length=1000, blank=True)
     periodo_eficacia = models.CharField(max_length=50, blank=True)
     periodo_eficacia_norm = models.CharField(max_length=50, blank=True)
     condicion_almacenamiento = models.CharField(max_length=255, blank=True)
@@ -115,10 +115,10 @@ class ActiveIngredient(models.Model):
     producto = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="active_ingredients"
     )
-    nombre_pa = models.CharField(max_length=255, blank=True)
+    nombre_pa = models.CharField(max_length=500, blank=True)
     concentracion = models.CharField(max_length=50, blank=True)
     unidad_medida = models.CharField(max_length=50, blank=True)
-    parte = models.CharField(max_length=100, blank=True)
+    parte = models.CharField(max_length=200, blank=True)
 
     class Meta:
         verbose_name = "Fórmula (PA)"
