@@ -1,14 +1,22 @@
 {% if page_obj.paginator.count > 0 %}
-<p class="text-sm text-muted mb-3">
-  {{ page_obj.paginator.count }} resultado{% if page_obj.paginator.count != 1 %}s{% endif %} —
-  página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
-</p>
+<div class="flex items-baseline justify-between gap-4 mb-3">
+  <p class="text-sm text-muted shrink-0">
+    {{ page_obj.paginator.count }} resultado{% if page_obj.paginator.count != 1 %}s{% endif %} —
+    página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+  </p>
+  <p class="text-sm text-text text-right">
+    Presiona un resultado para ver sus detalles | para ir ver la ficha oficial ISP presiona
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="display:inline;vertical-align:text-bottom" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+    </svg>
+  </p>
+</div>
 {% endif %}
 
 <div class="overflow-x-auto rounded-lg border border-border">
 
   <!-- Cabecera fija -->
-  <div class="results-grid bg-navy text-white/60 text-xs font-semibold uppercase tracking-wider">
+  <div class="results-grid bg-navy text-white/60 text-xs font-semibold uppercase tracking-wider max-sm:min-w-[62.5rem]">
     <div class="py-2.5 px-2 whitespace-nowrap">Registro</div>
     <div class="py-2.5 px-2 whitespace-nowrap">Nombre</div>
     <div class="py-2.5 px-2 whitespace-nowrap">Titular</div>
@@ -23,7 +31,7 @@
 
   <!-- Filas de resultados -->
   {% for product in page_obj %}
-  <details class="group border-t border-border">
+  <details class="group border-t border-border max-sm:min-w-[62.5rem]"><!-- min-w acoplado a la suma de cols de .results-grid en input.css -->
 
     <summary class="results-grid items-center bg-white hover:bg-teal-light cursor-pointer transition-colors duration-100">
 
