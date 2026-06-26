@@ -430,3 +430,9 @@ python manage.py renormalizar
 - La URL de ficha codifica el número de registro con `urllib.parse.quote`. El año
   de renovación ya viene en la columna `registro` del Excel (refleja la última
   renovación), por lo que no hay que calcularlo. El Excel no tiene `href`.
+
+---
+
+## Licencia
+
+Este proyecto está bajo la licencia MIT. Ver el archivo [LICENSE](LICENSE) para más detalles.
