@@ -3,6 +3,10 @@ from django.core.paginator import Paginator
 from .models import Product, Package, CompanyRole
 from .normalizers import fold
 
+def about(request):
+    return render(request, "registros/about.html")
+
+
 def search(request):
     nombre = request.GET.get("nombre", "")
     nombre_pa = request.GET.get("nombre_pa", "")

@@ -1,0 +1,156 @@
+{% extends "registros/base.html" %}
+
+{% block title %}¿Por qué existe este buscador? — Registros ISP{% endblock %}
+
+{% block content %}
+
+<!-- Encabezado -->
+<div class="mb-8">
+  <a href="{% url 'registros:search' %}" class="text-sm text-teal hover:text-teal-hover inline-flex items-center gap-1 mb-4">
+    ← Volver al buscador
+  </a>
+  <h1 class="font-display text-2xl font-bold text-navy tracking-tight">¿Por qué existe este buscador?</h1>
+  <p class="text-base text-muted mt-1">Complemento al buscador oficial del ISP de Chile. El buscador oficial no permite búsquedas por campos que están al interior de las fichas de cada producto (ej: periodo de eficacia, fecha de próxima renovación, país del fabricante de principio activo)</p>
+</div>
+
+<!-- Casos de uso — sección protagonista -->
+<div class="mb-8">
+  <div class="border-l-2 border-teal pl-2.5 mb-4">
+    <p class="text-xs font-semibold uppercase tracking-wider text-navy">Casos de uso</p>
+    <p class="text-sm text-muted mt-0.5">Búsquedas que el buscador oficial del ISP no permite.</p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+    <!-- Caso 1: próxima renovación -->
+    <div class="bg-white border border-border rounded-lg p-5">
+      <p class="text-sm font-semibold text-navy mb-4">Registros que vencen en los próximos 6 meses</p>
+      <div class="space-y-3">
+        <div>
+          <p class="form-label">Próxima renovación — desde</p>
+          <span class="code-id">hoy</span>
+        </div>
+        <div>
+          <p class="form-label">Próxima renovación — hasta</p>
+          <span class="code-id">hoy + 6 meses</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Caso 2: fabricante principio activo en China -->
+    <div class="bg-white border border-border rounded-lg p-5">
+      <p class="text-sm font-semibold text-navy mb-4">Paracetamol cuyo principio activo se fabrica en China</p>
+      <div class="space-y-3">
+        <div>
+          <p class="form-label">Principio activo</p>
+          <span class="code-id">paracetamol</span>
+        </div>
+        <div>
+          <p class="form-label">Función de empresa</p>
+          <span class="code-id">Fabricante de principios activos</span>
+        </div>
+        <div>
+          <p class="form-label">País</p>
+          <span class="code-id">China</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Caso 3: ibuprofeno + condición de almacenamiento -->
+    <div class="bg-white border border-border rounded-lg p-5">
+      <p class="text-sm font-semibold text-navy mb-4">Ibuprofeno que se almacena a 30 °C</p>
+      <div class="space-y-3">
+        <div>
+          <p class="form-label">Principio activo</p>
+          <span class="code-id">ibuprofeno</span>
+        </div>
+        <div>
+          <p class="form-label">Cond. de almacenamiento</p>
+          <span class="code-id">30</span>
+        </div>
+      </div>
+      <div class="bg-teal-light rounded p-3 mt-4 text-xs text-text leading-relaxed">
+        <strong>Tip:</strong> el campo busca coincidencias parciales en texto libre.
+        Escribe <span class="font-mono bg-white/60 rounded px-1">30</span> en lugar de <span class="font-mono bg-white/60 rounded px-1">30 °C</span> —
+        el ISP registra la misma temperatura en formatos distintos
+        (<span class="font-mono">30ºc</span>, <span class="font-mono">30°C</span>, <span class="font-mono">30 °C</span>…)
+        y solo <span class="font-mono bg-white/60 rounded px-1">30</span> los encuentra todos.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Comparación condensada a chips -->
+<div class="bg-white border border-border rounded-lg p-5 mb-8">
+  <div class="space-y-3">
+
+    <div class="flex flex-wrap items-baseline gap-2">
+      <span class="text-sm text-muted shrink-0 font-medium">Ya en el buscador del ISP:</span>
+      <div class="flex flex-wrap gap-1.5">
+        <span class="bg-surface border border-border text-muted text-xs rounded px-2 py-0.5">Nombre</span>
+        <span class="bg-surface border border-border text-muted text-xs rounded px-2 py-0.5">Principio activo</span>
+        <span class="bg-surface border border-border text-muted text-xs rounded px-2 py-0.5">Empresa (titular)</span>
+        <span class="bg-surface border border-border text-muted text-xs rounded px-2 py-0.5">N° de registro</span>
+        <span class="bg-surface border border-border text-muted text-xs rounded px-2 py-0.5">Equivalencia terapéutica</span>
+        <span class="bg-surface border border-border text-muted text-xs rounded px-2 py-0.5">Condición de venta</span>
+        <span class="bg-surface border border-border text-muted text-xs rounded px-2 py-0.5">Control legal</span>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-baseline gap-2">
+      <span class="text-sm text-navy shrink-0 font-semibold">Acá se suma:</span>
+      <div class="flex flex-wrap gap-1.5">
+        <span class="bg-teal-light text-teal text-xs rounded px-2 py-0.5">Vía de administración</span>
+        <span class="bg-teal-light text-teal text-xs rounded px-2 py-0.5">Régimen</span>
+        <span class="bg-teal-light text-teal text-xs rounded px-2 py-0.5">Cond. de almacenamiento</span>
+        <span class="bg-teal-light text-teal text-xs rounded px-2 py-0.5">Período de eficacia</span>
+        <span class="bg-teal-light text-teal text-xs rounded px-2 py-0.5">Descripción de envase</span>
+        <span class="bg-teal-light text-teal text-xs rounded px-2 py-0.5">Estado</span>
+        <span class="bg-teal-light text-teal text-xs rounded px-2 py-0.5">Empresa por función, razón social y país</span>
+        <span class="bg-teal-light text-teal text-xs rounded px-2 py-0.5">Rangos de fecha</span>
+      </div>
+    </div>
+
+  </div>
+  <div class="mt-4 pt-4 border-t border-border flex flex-wrap gap-4 text-xs">
+    <a href="https://registrosanitario.ispch.gob.cl/" target="_blank" rel="noopener"
+       class="text-teal hover:text-teal-hover underline underline-offset-2">Ir al buscador oficial del ISP →</a>
+    <a href="{% url 'registros:search' %}"
+       class="text-teal hover:text-teal-hover underline underline-offset-2">Ir al buscador avanzado→</a>
+  </div>
+</div>
+
+<!-- Aviso importante -->
+<div class="bg-white border border-border rounded-lg p-5 mb-8">
+  <div class="border-l-2 border-teal pl-2.5 mb-4">
+    <p class="text-xs font-semibold uppercase tracking-wider text-navy">Aviso importante</p>
+  </div>
+  <div class="space-y-2 text-sm text-muted">
+    <p>Este sitio <strong class="text-text">no es oficial del ISP</strong>.</p>
+    <p>Los datos provienen del Registro Sanitario público del ISP y pueden estar desactualizados respecto de la fuente según la fecha de la última carga.</p>
+    <p>Ante cualquier discrepancia, la fuente válida es el
+      <a href="https://registrosanitario.ispch.gob.cl/" target="_blank" rel="noopener"
+         class="text-teal hover:text-teal-hover underline underline-offset-2">Registro Sanitario oficial del ISP</a>.
+    </p>
+    <p>Los datos no deben usarse como única referencia para decisiones clínicas o regulatorias.</p>
+  </div>
+</div>
+
+<!-- Contacto — pitch de servicios -->
+<div class="border-l-2 border-teal pl-2.5">
+  <p class="text-sm font-semibold uppercase tracking-wider text-navy mb-3">Contacto</p>
+  <p class="text-base text-text">Hecho por <strong>Yesmin Pizarro</strong>.</p>
+  <p class="text-base text-muted mt-3 leading-relaxed">
+    <strong class="text-text">¿Tienes un problema tecnológico en tu empresa farmacéutica o cosmética?</strong><br>
+    Te ayudo a resolverlo: alguien que entiende el dominio farmacéutico y además construye la solución
+    — software, datos o automatización.
+  </p>
+  <p class="text-base mt-2">
+    Conversemos →
+    <a href="mailto:info@yesminpizarro.cl"
+       class="text-teal hover:text-teal-hover underline underline-offset-2">info@yesminpizarro.cl</a>
+  </p>
+</div>
+
+{% endblock %}
