@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from registros.excel import read_registros
-from registros.models import Product
+from registros.models import DataUpdate, Product
 from registros.scraper import get_user_agent, scrape_registro
 
 
@@ -180,5 +180,12 @@ class Command(BaseCommand):
                 f"  {deleted} filas borradas (producto + relacionados en CASCADE)."
             ))
 
+        # Sellar la fecha de la última revisión del Excel (aunque el diff venga vacío).
+        stamp = DataUpdate.load()
+        stamp.last_checked_at = timezone.now()
+        stamp.save()
+
         self.stdout.write("")
-        self.stdout.write(self.style.SUCCESS("Actualización completada."))
+        self.stdout.write(self.style.SUCCESS(
+            f"Actualización completada. Última revisión: {stamp.last_checked_at:%d/%m/%Y %H:%M}"
+        ))

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, Package, CompanyRole, ActiveIngredient
+from .models import Product, Package, CompanyRole, ActiveIngredient, DataUpdate
 
 
 # Uso de decorador ara definir la clase y registrarla
@@ -24,3 +24,8 @@ class CompanyRoleAdmin(admin.ModelAdmin):
 @admin.register(ActiveIngredient)
 class ActiveIngredientAdmin(admin.ModelAdmin):
     list_display = ["producto", "nombre_pa", "concentracion", "unidad_medida"]
+
+
+@admin.register(DataUpdate)
+class DataUpdateAdmin(admin.ModelAdmin):
+    list_display = ["last_checked_at"]

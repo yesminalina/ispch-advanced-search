@@ -127,3 +127,31 @@ class ActiveIngredient(models.Model):
     def __str__(self):
         return f"{self.nombre_pa} {self.concentracion} {self.unidad_medida}"
 
+
+class DataUpdate(models.Model):
+    """Sello de la última revisión del Excel del ISP (singleton, fila pk=1).
+
+    Se actualiza automáticamente al final de cada corrida real de
+    update_from_excel, aunque el diff venga vacío — refleja que los datos
+    están al día con el ISP, no que hubo cambios.
+    """
+    last_checked_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Actualización de datos"
+        verbose_name_plural = "Actualización de datos"
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def load(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+    def __str__(self):
+        if self.last_checked_at:
+            return f"Última revisión: {self.last_checked_at:%d/%m/%Y %H:%M}"
+        return "Sin registro de actualización"
+
