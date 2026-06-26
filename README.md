@@ -17,8 +17,10 @@ oficial del ISP no expone.
 
 ## Qué puedes buscar
 
-El buscador oficial del ISP solo permite filtrar por nombre de producto y número
-de registro. Esta herramienta agrega los siguientes campos:
+El buscador oficial del ISP permite filtrar por nombre de producto, principio activo,
+empresa (titular), N° de registro, equivalencia terapéutica, condición de venta y
+control legal. Esta herramienta **suma** la búsqueda por los campos internos de la
+ficha que el oficial no expone, todos combinables entre sí:
 
 | Tipo de búsqueda | Campos disponibles |
 |---|---|
@@ -31,8 +33,10 @@ de registro. Esta herramienta agrega los siguientes campos:
 
 ## Stack
 
-- **Backend**: Django + SQLite (desarrollo) / PostgreSQL (producción)
+- **Backend**: Django + PostgreSQL; extensión `unaccent` para búsqueda insensible a
+  tildes; variables de entorno con `python-dotenv` (`.env.example` incluido)
 - **Scraping**: `requests` + `beautifulsoup4`
+- **Estilos**: Tailwind CSS v4 compilado con `@tailwindcss/cli` (vía npm)
 - **Interfaz de búsqueda**: HTMX (partials renderizados en el servidor, sin
   frontend separado)
 
@@ -44,23 +48,31 @@ de registro. Esta herramienta agrega los siguientes campos:
 ispch-search/
   manage.py
   requirements.txt
+  package.json          # scripts de Tailwind: "build:css" y "dev:css"
+  .env.example          # plantilla de variables de entorno (copiar a .env)
   ispch_project/        # configuración Django, URLs, WSGI/ASGI
   registros/            # app principal
-    models.py           # Product, Package, CompanyRole, ActiveIngredient
+    models.py           # Product, Package, CompanyRole, ActiveIngredient, DataUpdate
     parser.py           # parse_file(html) → dict
     normalizers.py      # funciones normalize_*
     loader.py           # load_product(dict, control_legal) → (Product, created)
     excel.py            # read_registros(path) → {registro: control_legal}
     scraper.py          # fetch, is_empty_ficha, scrape_registro (helpers compartidos)
-    views.py            # search(request) — la vista de búsqueda completa
-    urls.py             # app_name = "registros", name = "search"
+    context_processors.py  # expone last_update (DataUpdate) a todas las plantillas
+    views.py            # search(request), about(request)
+    urls.py             # app_name = "registros", name = "search" | "about"
     admin.py
-    static/registros/js/
-      htmx.min.js
-      search-form.js    # habilita/deshabilita campos de empresa según función
+    static/registros/
+      js/
+        htmx.min.js
+        search-form.js  # habilita/deshabilita campos de empresa según función
+      css/
+        input.css       # fuente Tailwind (tokens de diseño, componentes)
+        app.css         # CSS compilado (generado; no editar a mano)
     templates/registros/
       base.html
       search.html       # formulario de búsqueda
+      about.html        # página /acerca-de/
       partials/
         results.html    # tabla de resultados + paginación (target de HTMX)
     management/commands/
@@ -199,21 +211,34 @@ python manage.py renormalizar
 python -m venv venv
 source venv/bin/activate          # Windows: venv\Scripts\activate
 
-# 2. Instalar dependencias
+# 2. Instalar dependencias Python
 pip install -r requirements.txt
 
-# 3. Aplicar migraciones
+# 3. Configurar la base de datos PostgreSQL
+#    - Crea una base de datos (p.ej. "ispch") en tu servidor PostgreSQL local.
+#    - Copia .env.example a .env y ajusta PG_DB, PG_USER, PG_PASSWORD, etc.
+cp .env.example .env
+
+# 4. Aplicar migraciones
+#    La migración 0009 instala la extensión "unaccent". Si tu usuario de DB
+#    no tiene privilegios para CREATE EXTENSION, créala antes como superusuario:
+#      psql -U postgres -d ispch -c "CREATE EXTENSION IF NOT EXISTS unaccent;"
 python manage.py migrate
 
-# 4. (Opcional) Crear superusuario para el admin
+# 5. Compilar los estilos Tailwind
+npm install
+npm run build:css
+
+# 6. (Opcional) Crear superusuario para el admin
 python manage.py createsuperuser
 
-# 5. Levantar el servidor de desarrollo
+# 7. Levantar el servidor de desarrollo
 python manage.py runserver
 ```
 
 Todos los comandos `manage.py` se ejecutan desde la raíz del repositorio con el
-entorno virtual activo.
+entorno virtual activo. Para desarrollar con recarga automática de estilos usa
+`npm run dev:css` en una terminal paralela en lugar del paso 5.
 
 ---
 
@@ -389,8 +414,9 @@ python manage.py renormalizar
 - **SSL**: la verificación del certificado está desactivada (`verify=False`)
   porque el certificado del servidor del ISP no pasa la verificación de cadena.
   Es deuda técnica documentada; no usar en producción sin resolverlo.
-- **Base de datos en producción**: el proyecto usa SQLite en desarrollo. Para
-  búsqueda de texto completo (FTS) en producción se requiere PostgreSQL.
+- **Búsqueda de texto completo (FTS)**: la búsqueda de texto libre usa `icontains`
+  con la extensión `unaccent` de PostgreSQL (insensible a tildes). La FTS
+  propiamente tal (ranking por relevancia, stemming) aún no está implementada.
 
 ---
 
