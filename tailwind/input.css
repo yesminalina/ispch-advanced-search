@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* Overlay de carga: invisible pero no interactivo hasta que HTMX lo activa */
+@layer base {
+  .htmx-indicator        { pointer-events: none; }
+  .htmx-indicator.htmx-request { pointer-events: auto; }
+}
+
 /* ── Tokens de diseño ───────────────────────────────────────────────────────
    Instrumento clínico con carácter.
    Paleta: navy oscuro (header) + teal (acento único) + blancos clínicos.

@@ -18,14 +18,14 @@
   </div>
 </div>
 
-<form hx-get="{% url 'registros:search' %}" hx-target="#results" id="search-form"
+<form hx-get="{% url 'registros:search' %}" hx-target="#results" hx-indicator="#loading-overlay" id="search-form"
       class="bg-white rounded-lg border border-border p-5 mb-6">
 
   <!-- Fila 1: campos de texto principales -->
   <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-3">
     <div>
       <label class="form-label">Nombre del producto</label>
-      <input type="text" name="nombre" class="form-input" placeholder="ej. trioval">
+      <input type="text" name="nombre" class="form-input" placeholder="ej. Ozempic">
     </div>
     <div>
       <label class="form-label">Principio activo</label>
@@ -184,8 +184,12 @@
   </div>
 
 
-  <!-- Botón -->
-  <div class="flex justify-end">
+  <!-- Botones -->
+  <div class="flex justify-end gap-3">
+    <button type="button" id="clear-form"
+            class="px-6 py-2 rounded border border-border text-text text-sm font-semibold hover:bg-surface active:scale-95 transition-all">
+      Limpiar
+    </button>
     <button type="submit"
             class="px-6 py-2 rounded bg-teal text-white text-sm font-semibold hover:bg-teal-hover active:scale-95 transition-all">
       Buscar
@@ -193,6 +197,14 @@
   </div>
 
 </form>
+
+<!-- Overlay de carga: cubre la página con fondo esmerilado y spinner centrado -->
+<div id="loading-overlay" class="htmx-indicator fixed inset-0 z-50 flex items-center justify-center bg-white/60 backdrop-blur-sm">
+  <svg class="animate-spin w-10 h-10 text-teal drop-shadow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+    <circle class="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"/>
+    <path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+  </svg>
+</div>
 
 <div id="results">
   {% include "registros/partials/results.html" %}
