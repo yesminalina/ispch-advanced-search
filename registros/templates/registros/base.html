@@ -27,12 +27,13 @@
         <div class="max-w-screen-xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
             <a href="{% url 'registros:search' %}" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
                 <span class="font-display text-xs font-semibold uppercase tracking-[0.2em] text-white/70">Buscador Avanzado</span>
-                <span class="text-white/20">·</span>
-                <span class="font-display text-sm font-bold tracking-tight">Registro Sanitario</span>
+                <span class="hidden sm:inline text-white/20">·</span>
+                <span class="hidden sm:inline font-display text-sm font-bold tracking-tight">Registro Sanitario</span>
             </a>
             <div class="flex items-center gap-5 shrink-0">
                 <a href="{% url 'registros:about' %}" class="hidden sm:inline text-sm font-bold text-white hover:text-white/80 transition-colors">Acerca de</a>
                 <div class="text-xs text-white/70">
+                    <span class="sm:hidden">Últ. act.: </span>
                     <span class="hidden sm:inline">Última actualización: </span>
                     <span class="font-mono">{{ last_update|date:"d/m/Y H:i"|default:"—" }}</span>
                 </div>
