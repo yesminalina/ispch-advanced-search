@@ -18,6 +18,12 @@
   </div>
 </div>
 
+<!-- Aviso beta -->
+<div class="flex items-center gap-3 bg-teal-light rounded px-4 py-2.5 mb-6 text-xs text-muted">
+  <span class="shrink-0 bg-teal text-white font-mono font-semibold uppercase tracking-wider rounded px-2 py-0.5">Beta</span>
+  <span>Solo incluye <strong class="text-text">registros vigentes</strong>. Se agregarán cancelados y suspendidos en una próxima versión.</span>
+</div>
+
 <form hx-get="{% url 'registros:search' %}" hx-target="#results" hx-indicator="#loading-overlay" id="search-form"
       class="bg-white rounded-lg border border-border p-5 mb-6">
 
@@ -33,7 +39,7 @@
     </div>
     <div>
       <label class="form-label">Titular</label>
-      <input type="text" name="titular" class="form-input" placeholder="Opko">
+      <input type="text" name="titular" class="form-input" placeholder="ej. Opko">
     </div>
     <div>
       <label class="form-label">N° de registro</label>
@@ -143,7 +149,7 @@
     </div>
     <div>
       <label class="form-label">Cond. de almacenamiento</label>
-      <input type="text" name="condicion_almacenamiento" class="form-input" placeholder="ej. refrigerar">
+      <input type="text" name="condicion_almacenamiento" class="form-input" placeholder="ej. 30°C">
     </div>
     <div>
       <label class="form-label">Descripción del envase</label>
