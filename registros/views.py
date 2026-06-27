@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator
+from django.db.models import Value
+from django.db.models.functions import Replace
 from .models import Product, Package, CompanyRole
 from .normalizers import fold
 
@@ -95,7 +97,12 @@ def search(request):
 
     if condicion_almacenamiento:
         has_filters = True
-        products = products.filter(packagings__condicion_almacenamiento__unaccent__icontains=fold(condicion_almacenamiento))
+        term = fold(condicion_almacenamiento).replace(" ", "")
+        products = products.annotate(
+            cond_alm_nospace=Replace(
+                "packagings__condicion_almacenamiento", Value(" "), Value("")
+            )
+        ).filter(cond_alm_nospace__unaccent__icontains=term)
 
     if periodo_eficacia:
         has_filters = True
