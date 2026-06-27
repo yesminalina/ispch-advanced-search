@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: ispch-search
+    name: buscador-registros
     runtime: python
     plan: free
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
