@@ -20,5 +20,3 @@ services:
         sync: false
       - key: PG_PORT
         value: "5432"
-      - key: RENDER_EXTERNAL_HOSTNAME
-        sync: false
