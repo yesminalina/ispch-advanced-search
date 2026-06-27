@@ -39,6 +39,9 @@ ficha que el oficial no expone, todos combinables entre sí:
 - **Estilos**: Tailwind CSS v4 compilado con `@tailwindcss/cli` (vía npm)
 - **Interfaz de búsqueda**: HTMX (partials renderizados en el servidor, sin
   frontend separado)
+- **Despliegue**: Render (servicio web con **gunicorn** + **WhiteNoise** para
+  estáticos) + Supabase (PostgreSQL gestionado). Config de producción vía
+  variables de entorno (`DEBUG`, `SECRET_KEY`, `PG_*`).
 
 ---
 
@@ -50,6 +53,9 @@ ispch-search/
   requirements.txt
   package.json          # scripts de Tailwind: "build:css" y "dev:css"
   .env.example          # plantilla de variables de entorno (copiar a .env)
+  render.yaml           # Blueprint de Render (servicio web)
+  tailwind/
+    input.css           # fuente Tailwind (tokens de diseño, componentes)
   ispch_project/        # configuración Django, URLs, WSGI/ASGI
   registros/            # app principal
     models.py           # Product, Package, CompanyRole, ActiveIngredient, DataUpdate
@@ -65,9 +71,8 @@ ispch-search/
     static/registros/
       js/
         htmx.min.js
-        search-form.js  # habilita/deshabilita campos de empresa según función
+        search-form.js  # habilita/deshabilita empresa según función; botón limpiar, scroll, overlay
       css/
-        input.css       # fuente Tailwind (tokens de diseño, componentes)
         app.css         # CSS compilado (generado; no editar a mano)
     templates/registros/
       base.html
@@ -430,6 +435,17 @@ python manage.py renormalizar
 - La URL de ficha codifica el número de registro con `urllib.parse.quote`. El año
   de renovación ya viene en la columna `registro` del Excel (refleja la última
   renovación), por lo que no hay que calcularlo. El Excel no tiene `href`.
+
+---
+
+## Despliegue
+
+La aplicación corre en **Render** (web service) con **Supabase** como base de datos PostgreSQL gestionada.
+
+- **Build y arranque**: Render lee `render.yaml` (Blueprint). El build instala dependencias y ejecuta `collectstatic`; el arranque ejecuta `migrate` y luego `gunicorn`. **WhiteNoise** sirve los archivos estáticos directamente desde el proceso web.
+- **Base de datos**: Supabase (free tier). La conexión usa el **session pooler** (puerto 5432, IPv4) porque Render no soporta IPv6. La extensión `unaccent` se habilita desde el dashboard de Supabase antes de migrar.
+- **Secretos**: `DJANGO_SECRET_KEY`, `PG_USER`, `PG_PASSWORD` y `PG_HOST` se cargan como variables de entorno en el dashboard de Render, no en el repositorio. `DEBUG` es `False` en producción.
+- **Scraping**: corre **localmente** apuntando a Supabase; Render no ejecuta el scraper. La aplicación web solo lee la DB.
 
 ---
 
