@@ -144,7 +144,7 @@ def search(request):
     if not has_filters:
         products = Product.objects.none()
     
-    products = products.distinct()
+    products = products.distinct().order_by("nombre")
 
     # ---- Paginación ----
     paginator = Paginator(products, 25)
