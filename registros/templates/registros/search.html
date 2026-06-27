@@ -12,16 +12,23 @@
   </div>
   <div class="mt-3 lg:mt-1 border-l-2 border-teal pl-2.5">
     <p class="text-xs md:text-[15px] text-muted leading-relaxed">
-      Este sitio <strong class="text-text">complementa el buscador oficial del ISP</strong> agregando filtros por rangos de fecha de registro, material de envase, condición de almacenamiento, periodo de eficacia, vía de administración, empresas relacionadas (acondicionador, fabricante semielaborado, etc.) por función y país, entre otros — todas estas opciones combinables entre sí. <strong class="text-text">Búsquedas que al día de hoy no son posibles en el sitio oficial</strong>. <strong>Esta página no pertenece al ISP</strong>
-      <a href="{% url 'registros:about' %}" class="text-teal hover:text-teal-hover underline underline-offset-2 whitespace-nowrap">¿Por qué existe este buscador?</a>
+      Este sitio <strong class="text-text">complementa el buscador oficial del ISP</strong> agregando filtros por rangos de fecha de registro, material de envase, condición de almacenamiento, periodo de eficacia, vía de administración, empresas relacionadas (acondicionador, fabricante semielaborado, etc.) por función y país, entre otros — todas estas opciones combinables entre sí. <strong class="text-text">Búsquedas que al día de hoy no son posibles en el sitio oficial</strong>. 
     </p>
+    <p class=text-xs md:text-[15px] text-muted mt-2>Esta página no pertenece al sitio oficial del ISP <span><a href="{% url 'registros:about' %}" class="text-teal text-sm hover:text-teal-hover underline underline-offset-2 whitespace-nowrap">¿Por qué existe este buscador?</a></span></p>
+
   </div>
 </div>
 
 <!-- Aviso beta -->
+<div class="flex items-center gap-3 bg-amber-100 rounded px-4 py-2.5 mb-3 text-xs text-amber-800">
+  <span class="shrink-0 bg-amber-400 text-amber-900 font-mono font-semibold uppercase tracking-wider rounded px-2 py-0.5">Beta</span>
+  <span>Solo incluye <strong class="text-amber-900">registros vigentes</strong>. Se agregarán cancelados y suspendidos en una próxima versión.</span>
+</div>
+
+<!-- Aviso: limpiar filtros entre búsquedas -->
 <div class="flex items-center gap-3 bg-teal-light rounded px-4 py-2.5 mb-6 text-xs text-muted">
-  <span class="shrink-0 bg-teal text-white font-mono font-semibold uppercase tracking-wider rounded px-2 py-0.5">Beta</span>
-  <span>Solo incluye <strong class="text-text">registros vigentes</strong>. Se agregarán cancelados y suspendidos en una próxima versión.</span>
+  <span class="shrink-0 bg-teal text-white font-mono font-semibold uppercase tracking-wider rounded px-2 py-0.5">Tip</span>
+  <span>Antes de buscar algo nuevo, recuerda usar <strong class="text-text">Limpiar</strong> para asegurarte que no dejaste un filtro indeseado.</span>
 </div>
 
 <form hx-get="{% url 'registros:search' %}" hx-target="#results" hx-indicator="#loading-overlay" id="search-form"
