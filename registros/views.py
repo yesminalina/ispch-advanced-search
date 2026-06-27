@@ -1,6 +1,7 @@
+import re
 from django.shortcuts import render
 from django.core.paginator import Paginator
-from django.db.models import Value
+from django.db.models import Q, Value
 from django.db.models.functions import Replace
 from .models import Product, Package, CompanyRole
 from .normalizers import fold
@@ -97,12 +98,35 @@ def search(request):
 
     if condicion_almacenamiento:
         has_filters = True
-        term = fold(condicion_almacenamiento).replace(" ", "")
-        products = products.annotate(
-            cond_alm_nospace=Replace(
-                "packagings__condicion_almacenamiento", Value(" "), Value("")
+        # El dato del ISP usa tres símbolos de grado distintos:
+        # ° (U+00B0, grado real), º (U+00BA, ordinal masc.), ª (U+00AA, ordinal fem.),
+        # más variantes de espaciado. Quitamos los tres y los espacios en ambos lados.
+        # Si el término tenía unidad de temperatura (ej. "30°C" → term="30C"),
+        # hacemos OR con el número solo ("30") para incluir registros como
+        # "a no más de 30°" o "30 ± 2°C" donde el número y la C no quedan adyacentes.
+        term = fold(condicion_almacenamiento)
+        for ch in (" ", "°", "º", "ª"):
+            term = term.replace(ch, "")
+        term_num = re.sub(r"[a-zA-Z]+$", "", term)
+        cond_clean = Replace(
+            Replace(
+                Replace(
+                    Replace("packagings__condicion_almacenamiento", Value(" "), Value("")),
+                    Value("°"), Value(""),
+                ),
+                Value("º"), Value(""),
+            ),
+            Value("ª"), Value(""),
+        )
+        if term_num and term_num != term:
+            products = products.annotate(cond_alm_clean=cond_clean).filter(
+                Q(cond_alm_clean__unaccent__icontains=term)
+                | Q(cond_alm_clean__unaccent__icontains=term_num)
             )
-        ).filter(cond_alm_nospace__unaccent__icontains=term)
+        else:
+            products = products.annotate(cond_alm_clean=cond_clean).filter(
+                cond_alm_clean__unaccent__icontains=term
+            )
 
     if periodo_eficacia:
         has_filters = True
